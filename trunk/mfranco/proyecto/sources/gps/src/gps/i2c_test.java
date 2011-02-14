@@ -1,9 +1,9 @@
 package gps;
 
-import compasNavigator;
-import lejos.navigation.CompassNavigator;
-import lejos.navigation.CompassPilot;
+
+import lejos.robotics.navigation.*;
 import lejos.nxt.*;
+import lejos.nxt.addon.CompassSensor;
 
 /**
 * @author Martijn ten Bhömer
@@ -43,7 +43,7 @@ public class i2c_test extends Thread {
     //iniciar las clases
     public static GPSSensor gps;
     public static CompassPilot pilot;
-    public static CompassNavigator navigator;
+    //public static CompassNavigator navigator;
 
     public static void main(String[] args) {
         LCD.clear();
@@ -62,10 +62,10 @@ public class i2c_test extends Thread {
 
     //Crear el objeto Compass navigator, esto nos ayudará a navegar
     //uso del compass digital.
-    pilot = new CompassPilot(SensorPort.S2, WheelDiameter, TrackWidth,
-            Motor.A, Motor.B);
-    navigator = new CompassNavigator(pilot);
-    navigator.calibrateCompass();
+    CompassSensor compass = new CompassSensor(SensorPort.S2);
+    pilot = new CompassPilot(compass, WheelDiameter, TrackWidth, Motor.A, Motor.B);
+    //navigator = new CompassNavigator(pilot);
+    pilot.calibrate();
 
     //Crear y activar el hilo de navegación
     Thread gpsThread = new i2c_test();
@@ -80,7 +80,8 @@ public class i2c_test extends Thread {
             LCD.clear();
             LCD.drawString("calibrating", 0, 0);
             LCD.refresh();
-            navigator.calibrateCompass();
+            //navigator.calibrateCompass();
+            pilot.calibrate();
         }
 
         if (Button.ESCAPE.isPressed()) {
