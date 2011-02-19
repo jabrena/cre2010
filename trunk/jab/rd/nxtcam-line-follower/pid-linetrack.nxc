@@ -1,0 +1,341 @@
+/*******************************************************************************
+*This is a line tracking program by Alejandro Erickson.
+*
+*
+*
+*
+*
+***************************************************/
+
+#include "altcamlib.nxc"
+//#include "nxtcamlib.nxc"
+#define mid(a,b) (a+b)/2
+#define min(a,b) (a<b?a:b)
+#define max(a,b) (a>b?a:b)
+
+//P constant of proportionality
+#define KPP 30
+#define KPQ 1
+
+//I constant of proportionality
+#define KIP 1
+#define KIQ 1
+//30,1,5 works
+//D constant of proportionality
+#define KDP 30
+#define KDQ 1
+
+#define MAXTURN 32
+#define CENTER 88
+#define NXTCAM_REG_CMD 0x41
+
+//88x144
+#define BALLX 44
+#define BALLY 140
+#define BALLERR 20
+
+#define ACONST 5
+#define ERR 7
+#define HOMESOUND 50
+#define NSAMP 20
+
+#define SONARFWD IN_2
+#define SONARSIDE IN_3
+#define LIGHTSENSOR IN_4
+
+#define SONAR_READS 20
+#define SONAR_DIST 30
+#define LIGHT_DIST 40
+
+int datapoints;
+int color[8];
+int x1[8];
+int y1[8];
+int x2[8];
+int y2[8];
+int cy[8];
+int cx[8];
+int I = 0;
+int e1 = 0;
+int M = (100*KPP)/KPQ + (100*KIP)/KIQ + (100*KDP)/KDQ;
+
+
+
+
+int xscale(int x);
+int yscale(int y);
+void sort(int tone);
+int checkline();
+int PID(int e);
+void DrawObjects();
+
+
+task main(){
+
+	int i,j;
+	string message;
+	/*byte map[] = {50,50,50,50, 50,50,50,50, 50,50,50,50, 50,50,50,50,
+	  50,50,50,50, 50,50,50,50, 50,50,50,50, 50,50,50,50,
+	  50,50,50,50, 50,50,50,50, 50,50,50,50, 50,50,50,50}; */
+	int pid, spid;
+	int ignoreball = 0;
+	int ballflag = 0;
+	int sonarreads,lightsense;
+        byte map[] = {128,128,128,128,0,0,0,0,0,0,0,0,0,0,0,0,
+		      128,128,128,128,0,0,0,0,0,0,0,0,0,0,0,0,
+		      128,128,128,128,0,0,0,0,0,0,0,0,0,0,0,0};
+	nxtcamSendCommand(IN_1,'R');//this randomly fixes stuff?
+	nxtcamInit(IN_1);
+	//sendcolourMap(IN_1,map); 
+	//NXTCam_WriteColormap(map,0x02,IN_1);
+	//nxtcamDisabletrack(IN_1);
+	Wait(100);        //these seem important!
+	nxtcamNosort(IN_1);
+	Wait(100);
+	//nxtcamTracklines(IN_1);// this does fuck all.
+	if(nxtcamTrackobjects(IN_1) != NO_ERR){ Stop(1); PlayTone(440,400);}
+	Wait(100);
+	nxtcamEnabletrack(IN_1);
+	Wait(100);
+	TextOut(0, LCD_LINE8, "Success!");
+	Wait(1000);
+	ClearScreen();
+	TextOut(0, LCD_LINE8, "Stalled on init :(");
+	// Location is the bottom left!!!!!!!!!!!!!!!!!
+	SetSensorLowspeed(SONARFWD);
+	SetSensorLowspeed(SONARSIDE);
+	
+		
+	for(i = 0;i < 3000;i++){
+	  if(ignoreball){
+	    //we need to check the sonar sensor in SONARSIDE
+	    sonarreads = SensorUS(SONARSIDE);
+	    if(sonarreads < SONAR_DIST)//if we think we see something
+	      {
+		//stop the motors take an average of SONAR_READS readings
+		Off(OUT_AB);
+		sonarreads = 0;
+	      for(j=0;j<SONAR_READS;j++)
+		{
+		sonarreads += SensorUS(SONARSIDE);
+		Wait(30);//who knows how often it can read
+		}
+	      sonarreads = sonarreads/SONAR_READS;
+	      if(sonarreads < SONAR_DIST) //if we still see the object
+		{
+		  PlayTone(600,500);
+		  Wait(500);
+		  SetSensorLight(LIGHTSENSOR);Wait(100);
+		  lightsense = Sensor(LIGHTSENSOR);
+		  TextOut(0,LCD_LINE3,NumToStr(lightsense));
+		  if(lightsense > LIGHT_DIST)
+		    {
+		      RotateMotor(OUT_C,20,-230);
+		      OnRevSync(OUT_AB,40,0); Wait(2000);
+		      Stop(1);
+		    } else{ OnFwdSync(OUT_AB,40,0); Wait(500); Off(OUT_AB);}
+
+		}
+	      }
+
+	  }
+	  nxtcamGetdata(0,datapoints,color,x1,y1,x2,y2);
+	  
+	  ClearScreen();
+	  if( datapoints == 0 ) {
+	    message = "No objects ";
+	    message += NumToStr(i);
+	    TextOut(0, LCD_LINE1, message);
+	  } else if( datapoints > 8 || datapoints < 0) {
+	    message = "data fail : ";
+	    message += NumToStr(datapoints);
+	    TextOut(0, LCD_LINE2, message);Wait(1000);
+	  } else {
+	    for(j=0; j<datapoints;j++){
+	      cx[j] = mid(x1[j],x2[j]);
+	      cy[j] = mid(y1[j],y2[j]);
+	    }
+	    if(ignoreball == 0){
+	      for(j=0;j<datapoints;j++){
+		// ClearScreen(); TextOut(0, LCD_LINE2,NumToStr(color[j])); Wait(200);
+		if(color[j] == 1)//uncomment to get colour back
+		  { //PlayTone(440,200);
+		    ballflag = 1;
+		    break;
+		  }
+	      }
+	      if (ballflag) { ballflag = 0;
+		Off(OUT_AB);//stop moving
+		//I want the center of the ball to be at...
+		//(BALLX, BALLY)
+		//BALLERR
+		TextOut(0,LCD_LINE1,NumToStr(y2[j]-BALLY));
+		Wait(1000);
+		if(abs(y2[j]-BALLY) > BALLERR){
+		  RotateMotor(OUT_AB,30,(BALLY - y2[j]));
+		  Wait(200);
+		} else {
+		  OnFwdSync(OUT_AB,40,0); 
+		  RotateMotor(OUT_C,20,230);
+		  Off(OUT_AB);
+		  ignoreball = 1;
+		}
+	      }
+		
+	      }
+	  
+	    //		  sort(0);// we can assume for now that they are sorted
+	    /*
+	    //if this data set contains funny stuff we just skip it.
+	    if(datapoints < 8 || !checkline()){
+	    PlayTone(300,200);
+	    //if we lost the data points try turning more :D
+	    if(pid < -20) OnFwdSync(OUT_AB,30,-40);
+	    if (pid > 20) OnFwdSync(OUT_AB,30,40);
+	    Wait(34);
+	    continue;
+	    }
+	    */
+	    //  	    DrawObjects();
+	    
+	    //now we have 8 datapoints and 7 is the bottom one.
+	    //send error between center and bottom one to PID.
+	    //use result to affect a turn.
+	    //suppose we need to go right to get onto the line but the line turns left afterwards.
+	    //our PID should take this into accound
+	    
+	    
+	    pid = PID(cx[datapoints-1] - CENTER + 2*(checkline()?(cx[2]-cx[4]):0));
+	    //pid = PID(cx[0] - CENTER);
+	    //TextOut(70,LCD_LINE1,NumToStr(pid));
+	    spid = (abs(pid*20) + abs(cx[0] - cx[datapoints-1])*10)/50;
+	    //i want this to take into accound future ones too!
+	    //		  PlayTone(400-3*spid,250);
+	        OnFwdSync(OUT_AB,100-spid,pid);
+	    
+	  }
+	  Wait(34);
+	  
+	  
+	}
+	nxtcamDisabletrack(IN_1);
+	
+}
+
+
+//CAM: 176x144
+//LCD: 100x64
+int xscale(x){
+  return (x*100)/176;
+}
+
+int yscale(y){
+  return (y*64)/144;
+}
+
+void sort(tone) {
+  int  i = 1;
+  int  j = 2;
+  int temp;
+  while(i < datapoints)
+  {
+    if(y2[i-1] <= y2[i]) 
+    {
+      i = j;
+      j = j + 1;
+    }
+    else
+    {
+      if(tone) PlayTone(440,500);
+      temp = x1[i-1];
+      x1[i-1] = x1[i];
+      x1[i] = temp;
+      temp = y1[i-1];
+      y1[i-1] = y1[i];
+      y1[i] = temp;
+      temp = x2[i-1];
+      x2[i-1] = x2[i];
+      x2[i] = temp;
+      temp = y2[i-1];
+      y2[i-1] = y2[i];
+      y2[i] = temp;
+      i = i - 1;
+      if(i == 0){
+	i = j;
+	j = j + 1;
+      }
+    }
+  }
+}
+
+int checkline(){
+  if(y2[0] != 18) return 0;
+  if(y2[1] != 37) return 0;
+  if(y2[2] != 56) return 0;
+  if(y2[3] != 75) return 0;
+  if(y2[4] != 94) return 0;
+  if(y2[5] != 113) return 0;
+  if(y2[6] != 132) return 0;
+  if(y2[7] != 143) return 0;
+  return 1;
+}
+
+//int sendcolourmap(){
+//
+//}
+
+int PID(e){
+  int P,D;
+  int pid;
+  P = (KPP*e)/KPQ;
+  //set abs(e) at most 100
+  if(P<0) P = max(-M/3,P); else P = min(M/3,P);
+  
+  I += (KIP*e)/KIQ;
+  //abs(I) set to at most 100
+  if(I<0) I = max(-M/3,I); else I = min(M/3,I);
+
+  D = KDP*(e-e1)/KDQ;
+  //set abs(D) at most 100
+  if(D<0) D = max(-M/3,D); else D = min(M/3,D);
+
+  pid = P + I + D;
+  //abs(pid) <= M.  let's make it at most 40 (we don't want to turn sharper than 40)
+  //assume that values over M/2 are very unlikely 
+  pid = (pid*MAXTURN*2)/(M);
+  if(pid<0) pid = max(-MAXTURN,pid); else pid = min(MAXTURN,pid);
+  return pid;
+}
+
+
+void DrawObjects(){
+  int j;
+  DrawRectType drArgs,pt;
+  DrawLineType ln;
+  for(j = datapoints - 1; j > -1; j--)
+    {
+      TextOut(0,LCD_LINE7*j,NumToStr(y2[j]));		
+      drArgs.Location.X = xscale(x1[j]); 
+      drArgs.Location.Y = yscale(y2[j]); 
+      drArgs.Size.Width = xscale(x2[j]-x1[j]); 
+      drArgs.Size.Height = yscale(y1[j]-y2[j]); 
+      drArgs.Options = 0x00; // do not clear before drawing 
+      SysDrawRect(drArgs);
+      
+        pt.Location.X = xscale(cx[j]);
+      pt.Location.Y = yscale(cy[j]);
+      pt.Size.Width = 2;
+      pt.Size.Width = 2;
+      pt.Options = 0x00; // do not clear before drawing
+      SysDrawRect(pt);
+      if(j>0)
+	{
+	  ln.StartLoc.X = xscale(cx[j-1]);
+	  ln.StartLoc.Y = yscale(cy[j-1]);
+	  ln.EndLoc.X = xscale(cx[j]);
+	  ln.EndLoc.Y = yscale(cy[j]);
+	  ln.Options = 0x00;
+	  SysDrawLine(ln);
+	}
+    }
+}
