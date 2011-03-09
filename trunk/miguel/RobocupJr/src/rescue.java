@@ -1,4 +1,5 @@
 import lejos.nxt.*;
+import lejos.robotics.navigation.TachoPilot;
 /*********************************************************************************************/
 
 public class rescue {
@@ -6,6 +7,7 @@ public class rescue {
 		
 	private static Motor motorleft;
 	private static Motor motorright;
+	private static TachoPilot pilot;
 	
 	private static LightSensor lightleft;
 	private static LightSensor lightright;
@@ -14,11 +16,13 @@ public class rescue {
 	private static int valuellblack = 0;
 	private static int valuelrblack = 0;	
 	
-	public static int power = 100 ;
+	public static int power = 70 ;
 	/**instancio la CAM*/
+
+	private static final float wheeldiameter = 5.0f;
+	private static final float wheelseparation = 16.0f ;
 	
-	/*********motorleft= O;
-************************************************************************************/	
+/************************************************************************************/	
 	/*********************************************************************************************/
 	private static void parar(){
 		motorleft.stop();
@@ -34,7 +38,7 @@ public class rescue {
 		Button.waitForPress();
 		valuellwhite = lightleft.readValue();
 		valuelrwhite = lightright.readValue();
-
+		
 		System.out.println(valuellwhite);
 		System.out.println(valuelrwhite);
 		System.out.println("calibrarnegro");
@@ -69,25 +73,36 @@ public class rescue {
 		
 		
 		while(!Button.ESCAPE.isPressed()){
-			
+			 
+			//Si los dos sensores ven blanco
 			if ((lightleft.readValue() > valuellwhite) 
-					&& (lightright.readValue() > valuelrwhite ))
+					&&  (lightright.readValue() > valuelrwhite ))
 			{
+				//Avanzas
 				motorleft.forward();
 				motorright.forward();
-
-				motorright.setPower(power);
-				motorleft.setPower(power);
-						wait (1);
-			}			
+				wait (1);
+			}
+			//Sensor izquierdo ve negro y el sensor derecho blanco
 			else if ((lightleft.readValue() < valuellblack)
-						&&lightleft.readValue() > valuelrwhite)
+						&&(lightright.readValue() > valuelrwhite))
 			{
-					
-				
-			}else{
 				parar();
+				//gira a la izquierda
+				pilot.rotate(10);
+			//Si el sensor izquierdo blanco y el derecho negro
+			}else if ((lightleft.readValue() > valuellwhite)
+					&&(lightright.readValue() < valuelrblack)){
 				
+				parar();
+				//gira a la derecha
+				pilot.rotate(-10);
+				
+				wait(1);
+				
+			}else{ 
+				parar(); 
+				LCD.drawString("Otros", 0,7);
 			}
 		}
 		
@@ -109,9 +124,12 @@ public class rescue {
 	 
 		lightleft = new LightSensor(SensorPort.S1);
 		lightright = new LightSensor(SensorPort.S2);
-		//  enciende la luz de los sensores
+		// enciende la luz de los sensores
 		lightright.setFloodlight(true);
 		lightleft.setFloodlight(true);
+		
+		pilot = new TachoPilot(wheeldiameter, wheelseparation, motorleft, motorright, false);
+		pilot.setSpeed(300);
 		
 		/*********************************************************************************************/
 		/*********************************************************************************************/
