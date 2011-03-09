@@ -17,19 +17,35 @@ public class rescue {
 	public static int power = 100 ;
 	/**instancio la CAM*/
 	
+	/*********motorleft= O;
+************************************************************************************/	
 	/*********************************************************************************************/
+	private static void parar(){
+		motorleft.stop();
+		motorright.stop();
+
+	}
+	
 	/*********************************************************************************************/
 	
 	private static void calibrar (){
 		System.out.println("calibrarblanco");
+		
 		Button.waitForPress();
 		valuellwhite = lightleft.readValue();
 		valuelrwhite = lightright.readValue();
 
+		System.out.println(valuellwhite);
+		System.out.println(valuelrwhite);
 		System.out.println("calibrarnegro");
+		
 		Button.waitForPress();
+		
 		valuellblack = lightleft.readValue();
 		valuelrblack = lightright.readValue();
+		
+		System.out.println(valuellblack);
+		System.out.println(valuellblack);
 		System.out.println("calibrado");
 		
 		
@@ -38,17 +54,47 @@ public class rescue {
 	
 	private static void siguelineas (){
 		//enciendo los motores
-		motorleft.forward();
-		//motorright.forward();
-
-		//doy potencia a los motores
-		motorleft.setPower(power);
-		//motorright.setPower(power);
 		
+		motorleft.forward();
+		motorright.forward();
+
+		motorright.setPower(power);
+		motorleft.setPower(power);
+		
+		valuellwhite = valuellwhite - 10 ;
+		valuelrwhite = valuelrwhite - 10 ;
+
+		valuellblack = valuellblack + 10;
+		valuelrblack = valuelrblack + 10;
+		
+		
+		while(!Button.ESCAPE.isPressed()){
+			
+			if ((lightleft.readValue() > valuellwhite) 
+					&& (lightright.readValue() > valuelrwhite ))
+			{
+				motorleft.forward();
+				motorright.forward();
+
+				motorright.setPower(power);
+				motorleft.setPower(power);
+						wait (1);
+			}			
+			else if ((lightleft.readValue() < valuellblack)
+						&&lightleft.readValue() > valuelrwhite)
+			{
+					
+				
+			}else{
+				parar();
+				
+			}
+		}
 		
 	}
-	/*********************************************************************************************/
-	
+	/******************************************
+			}***************************************************/
+
 	private static void wait (int miliseconds) {
 		try {Thread.sleep(miliseconds);} catch (Exception e) {}
 		
@@ -59,7 +105,8 @@ public class rescue {
 		//Instanciar 
 		motorleft =  Motor.A;
 		motorright =  Motor.C;
-		
+
+	 
 		lightleft = new LightSensor(SensorPort.S1);
 		lightright = new LightSensor(SensorPort.S2);
 		//  enciende la luz de los sensores
@@ -71,8 +118,8 @@ public class rescue {
 		//programa principal
 		
 		calibrar();
-		wait(5000);
-		/**siguelineas*/
+		Button.waitForPress();
+		siguelineas();
 		
 		
 	 }
