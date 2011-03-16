@@ -8,6 +8,9 @@ public class SigueLineas {
 	private Motor motorleft;
 	private Motor motorright;
 	private TachoPilot pilot;
+	private final float wheeldiameter = 5.0f;
+	private final float wheelseparation = 16.0f ;
+	public int power = 70 ;
 	
 	private LightSensor lightleft;
 	private LightSensor lightright;
@@ -16,11 +19,10 @@ public class SigueLineas {
 	private int valuellblack = 0;
 	private int valuelrblack = 0;	
 	
-	public int power = 70 ;
+
 	/**instancio la CAM*/
 
-	private final float wheeldiameter = 5.0f;
-	private final float wheelseparation = 16.0f ;
+
 	
 /************************************************************************************/	
 	/*********************************************************************************************/
@@ -110,6 +112,12 @@ public class SigueLineas {
 		motorleft =  Motor.A;
 		motorright =  Motor.C;
 
+		pilot = new TachoPilot(wheeldiameter, wheelseparation, motorleft, motorright, false);
+		pilot.setSpeed(300);
+		
+		motorright.setPower(power);
+		motorleft.setPower(power);
+		
 	 
 		lightleft = new LightSensor(SensorPort.S1);
 		lightright = new LightSensor(SensorPort.S2);
@@ -117,11 +125,7 @@ public class SigueLineas {
 		lightright.setFloodlight(true);
 		lightleft.setFloodlight(true);
 		
-		pilot = new TachoPilot(wheeldiameter, wheelseparation, motorleft, motorright, false);
-		pilot.setSpeed(300);
-		
-		motorright.setPower(power);
-		motorleft.setPower(power);
+
 		
 		valuellwhite = valuellwhite - 10 ;
 		valuelrwhite = valuelrwhite - 10 ;
