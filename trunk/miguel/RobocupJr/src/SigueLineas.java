@@ -57,22 +57,8 @@ public class SigueLineas {
 	/*********************************************************************************************/
 	
 	public void task (){
-		//enciendo los motores
 		
-		motorleft.forward();
-		motorright.forward();
-
-		motorright.setPower(power);
-		motorleft.setPower(power);
-		
-		valuellwhite = valuellwhite - 10 ;
-		valuelrwhite = valuelrwhite - 10 ;
-
-		valuellblack = valuellblack + 10;
-		valuelrblack = valuelrblack + 10;
-		
-		
-		while(!Button.ESCAPE.isPressed()){
+		//while(!Button.ESCAPE.isPressed()){
 			 
 			//Si los dos sensores ven blanco
 			if ((lightleft.readValue() > valuellwhite) 
@@ -104,7 +90,7 @@ public class SigueLineas {
 				parar(); 
 				LCD.drawString("Otros", 0,7);
 			}
-		}
+		//}
 		
 	}
 	/******************************************
@@ -133,6 +119,15 @@ public class SigueLineas {
 		
 		pilot = new TachoPilot(wheeldiameter, wheelseparation, motorleft, motorright, false);
 		pilot.setSpeed(300);
+		
+		motorright.setPower(power);
+		motorleft.setPower(power);
+		
+		valuellwhite = valuellwhite - 10 ;
+		valuelrwhite = valuelrwhite - 10 ;
+
+		valuellblack = valuellblack + 10;
+		valuelrblack = valuelrblack + 10;
 	}
 	
 	/*

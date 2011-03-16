@@ -1,3 +1,5 @@
+import lejos.nxt.Button;
+
 
 public class RescueAlmi2011 {
 
@@ -9,7 +11,14 @@ public class RescueAlmi2011 {
 
 		SigueLineas sl = new SigueLineas();
 		sl.calibrar();
-		sl.task();
+		
+		boolean tilt = false;
+		
+		//while(!tilt){
+		while(!Button.ESCAPE.isPressed()){
+			sl.task();
+		}
+		
 	}
 
 }
