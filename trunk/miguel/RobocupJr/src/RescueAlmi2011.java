@@ -1,4 +1,6 @@
 import lejos.nxt.Button;
+import lejos.nxt.SensorPort;
+import lejos.nxt.addon.TiltSensor;
 
 
 public class RescueAlmi2011 {
@@ -7,12 +9,11 @@ public class RescueAlmi2011 {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-
+		TiltSensor tilt = new TiltSensor(SensorPort.S3);
 		SigueLineas sl = new SigueLineas();
 		sl.calibrar();
 		
-		boolean tilt = false;
+		boolean tilt1 = false;
 		
 		//Tarea de seguir lineas
 		
