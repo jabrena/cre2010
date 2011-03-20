@@ -5,10 +5,7 @@ import lejos.nxt.addon.TiltSensor;
 
 public class RescueAlmi2011 {
 
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
+	public static void main(String[] args) throws InterruptedException {
 		TiltSensor tilt = new TiltSensor(SensorPort.S3);
 		SigueLineas sl = new SigueLineas();
 		sl.calibrar();
@@ -19,7 +16,9 @@ public class RescueAlmi2011 {
 		tiltValue = tilt.getXTilt();
 		int tiltUmbral = 100;
 		
-		//while(!tilt){
+		while (!Button.ESCAPE.isPressed()){
+		tiltValue = tilt.getXTilt();
+		
 		while(tiltValue<tiltUmbral){
 			sl.task();
 		}
@@ -28,14 +27,15 @@ public class RescueAlmi2011 {
 		
 		Rampa rampa = new Rampa();
 		
-		while(tiltValue <= tiltUmbral){
-			rampa.subir();
+		rampa.subir();
+		while(tiltValue<tiltUmbral){
+			sl.wait(1);
 		}
+		sl.parar();
+		sl.EntrarSala();
 		
-		rampa.parar();
-		
-		
-		
+		}
+
 	}
 
 }
