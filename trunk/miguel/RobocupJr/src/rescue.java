@@ -118,8 +118,8 @@ public class rescue {
 		
 		motorleft.forward();
 		motorright.forward();
-		motorleft.setspeed(800);
-		motorright.setspeed(800);
+		motorleft.setSpeed(800);
+		motorright.setSpeed(800);
 		
 		while (/**tilt indique inclinación*/){
 			wait(1);
