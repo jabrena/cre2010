@@ -72,7 +72,7 @@ public class rescue {
 		valuelrblack = valuelrblack + 10;
 		
 		
-		while(!Button.ESCAPE.isPressed()){
+		while(/**tilt indique llano*/){
 			 
 			//Si los dos sensores ven blanco
 			if ((lightleft.readValue() > valuellwhite) 
@@ -107,13 +107,27 @@ public class rescue {
 		}
 		
 	}
-	/******************************************
-			}***************************************************/
+	/*********************************************************************************************/
 
 	private static void wait (int miliseconds) {
 		try {Thread.sleep(miliseconds);} catch (Exception e) {}
 		
 	}
+	/*********************************************************************************************/
+	private static void rampa (){
+		
+		motorleft.forward();
+		motorright.forward();
+		motorleft.setspeed(800);
+		motorright.setspeed(800);
+		
+		while (/**tilt indique inclinación*/){
+			wait(1);
+		}
+	
+		parar();
+	} 
+	
 	/*********************************************************************************************/
 	
 	 public static void main(String[] args){
