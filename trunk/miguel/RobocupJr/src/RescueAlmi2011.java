@@ -13,15 +13,14 @@ public class RescueAlmi2011 {
 		SigueLineas sl = new SigueLineas();
 		sl.calibrar();
 		
-		boolean tilt1 = false;
-		
 		//Tarea de seguir lineas
 		
 		int tiltValue = 0;
+		tiltValue = tilt.getXTilt();
 		int tiltUmbral = 100;
 		
 		//while(!tilt){
-		while(!Button.ESCAPE.isPressed()){
+		while(tiltValue<tiltUmbral){
 			sl.task();
 		}
 		
