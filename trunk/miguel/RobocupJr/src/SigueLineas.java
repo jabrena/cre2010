@@ -25,13 +25,15 @@ public class SigueLineas {
 
 	
 /************************************************************************************/	
+	private void wait (int miliseconds) {
+		try {Thread.sleep(miliseconds);} catch (Exception e) {}
+		
+	}
 	/*********************************************************************************************/
 	private void parar(){
 		motorleft.stop();
 		motorright.stop();
-
 	}
-	
 	/*********************************************************************************************/
 	
 	public void calibrar (){
@@ -60,48 +62,68 @@ public class SigueLineas {
 	
 	public void task (){
 		
-		//while(!Button.ESCAPE.isPressed()){
-			 
-			//Si los dos sensores ven blanco
-			if ((lightleft.readValue() > valuellwhite) 
-					&&  (lightright.readValue() > valuelrwhite ))
-			{
-				//Avanzas
-				motorleft.forward();
-				motorright.forward();
-				wait (1);
-			}
-			//Sensor izquierdo ve negro y el sensor derecho blanco
-			else if ((lightleft.readValue() < valuellblack)
-						&&(lightright.readValue() > valuelrwhite))
-			{
-				parar();
-				//gira a la izquierda
-				pilot.rotate(10);
-			//Si el sensor izquierdo blanco y el derecho negro
-			}else if ((lightleft.readValue() > valuellwhite)
-					&&(lightright.readValue() < valuelrblack)){
-				
-				parar();
-				//gira a la derecha
-				pilot.rotate(-10);
-				
-				wait(1);
-				
-			}else{ 
-				parar(); 
-				LCD.drawString("Otros", 0,7);
-			}
-		//}
-		
-	}
-	/******************************************
-			}***************************************************/
+			 if (/** no hay obstaculo*/)
+			 {
+				 /**si no hay lata haz el siguelineas*/
+				//Si los dos sensores ven blanco
+					if ((lightleft.readValue() > valuellwhite) 
+							&&  (lightright.readValue() > valuelrwhite ))
+					{
+						//Avanzas
+						motorleft.forward();
+						motorright.forward();
+						wait (1);
+					}
+					//Sensor izquierdo ve negro y el sensor derecho blanco
+					else if ((lightleft.readValue() < valuellblack)
+								&&(lightright.readValue() > valuelrwhite))
+					{
+						parar();
+						//gira a la izquierda
+						pilot.rotate(10);
+					//Si el sensor izquierdo blanco y el derecho negro
+					}else if ((lightleft.readValue() > valuellwhite)
+							&&(lightright.readValue() < valuelrblack)){
+						
+						parar();
+						//gira a la derecha
+						pilot.rotate(-10);
+						
+						wait(1);
+						
+					}else{ 
+						parar(); 
+						LCD.drawString("Otros", 0,7);
+					}
 
-	private void wait (int miliseconds) {
-		try {Thread.sleep(miliseconds);} catch (Exception e) {}
+			 }else{
+				 /**si hay lata*/
+				 int dist1 = 100 ;
+				 //esquivar lata
+				 	//girar hacia la derecha 45º
+				 	pilot.rotate(-45);
+				 	//avanzar 
+				 	pilot.travel(dist1);
+				 	//girar a la izquierda
+				 	pilot.rotate(45);
+				 	
+				 	pilot.travel(300);
+				 	
+				 	pilot.rotate(45);
+				 	
+					//incorporarse 					 
+				 	pilot.travel(dist1);
+				 	
+				 	pilot.rotate(-45);
+				 	
+				 	pilot.travel(100);
+				 	
+				 }
 		
 	}
+	/*********************************************************************************************/
+
+	
 	/*********************************************************************************************/
 	
 	/*
