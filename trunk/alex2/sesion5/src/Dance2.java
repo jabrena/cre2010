@@ -273,7 +273,45 @@ import lejos.robotics.navigation.TachoPilot;
 				pilot.travelArc(20, 30);
 
 			}
+			private static void bloque7(){
+				int soundValue = 0;
+				
+				//while(!Button.ENTER.isPressed()){
+				for(int i = 0; i<=10000;i++){	
+					
+					soundValue = sound.readValue();
+					LCD.drawString("V:"+ soundValue, 0,3);
+					
+					int miliseconds = 100;
+					
+					if(soundValue > 40
+					){
+						armMotor.forward();
+						try {Thread.sleep(miliseconds);} catch (Exception e) {}
+						armMotor.stop();
+						armMotor.forward();
+						try {Thread.sleep(miliseconds);} catch (Exception e) {}
+						armMotor.stop();
+						luz();
 			
+					if(soundValue > 40){
+						armMotor.backward();
+						try {Thread.sleep(miliseconds);} catch (Exception e) {}
+						armMotor.stop();
+						armMotor.backward();
+						try {Thread.sleep(miliseconds);} catch (Exception e) {}
+						armMotor.stop();
+						luz();
+					
+					if(soundValue > 85){
+						pilot.rotate(360);
+					
+					
+					}
+					LCD.drawString("I:"+ i, 0,4);
+					}
+				}}	
+			}
 			public static void main(String[] args) {
 
 				//Instanciar
@@ -289,28 +327,12 @@ import lejos.robotics.navigation.TachoPilot;
 				
 				sound = new SoundSensor(SensorPort.S2);
 				light = new LightSensor(SensorPort.S3);
-				int soundValue = 0;
+
+				
+				
+			
 				
 				/*
-				while(!Button.ENTER.isPressed()){
-					
-					soundValue = sound.readValue();
-					LCD.drawString("V:"+ soundValue, 0,3);
-					
-					int miliseconds = 100;
-					
-					if(soundValue > 50){
-						armMotor.forward();
-						try {Thread.sleep(miliseconds);} catch (Exception e) {}
-						armMotor.stop();
-						armMotor.backward();
-						try {Thread.sleep(miliseconds);} catch (Exception e) {}
-						armMotor.stop();
-						luz();
-					}
-				}
-				*/
-
 				bloque1();
 				bloque2();
 				bloque3();
@@ -320,6 +342,9 @@ import lejos.robotics.navigation.TachoPilot;
 				luz();
 				bloque6();
 				
+				*/				
+				
+				bloque7();
 			}
 			
 			private static void While(boolean b) {
