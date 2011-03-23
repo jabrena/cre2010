@@ -6,7 +6,7 @@ import lejos.nxt.addon.TiltSensor;
 public class RescueAlmi2011 {
 
 	public static void main(String[] args) throws InterruptedException {
-		TiltSensor tilt = new TiltSensor(SensorPort.S3);
+		TiltSensor tilt = new TiltSensor(SensorPort.S4);
 		SigueLineas sl = new SigueLineas();
 		sl.calibrar();
 		

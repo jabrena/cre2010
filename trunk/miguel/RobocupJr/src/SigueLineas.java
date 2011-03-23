@@ -17,7 +17,8 @@ public class SigueLineas {
 	private int valuellwhite = 0;
 	private int valuelrwhite = 0;
 	private int valuellblack = 0;
-	private int valuelrblack = 0;	
+	private int valuelrblack = 0;
+	private UltrasonicSensor ultrasonidos = new UltrasonicSensor(SensorPort.S3);
 	
 
 	/**instancio la CAM*/
@@ -62,7 +63,7 @@ public class SigueLineas {
 	
 	public void task (){
 		
-			 if (/** no hay obstaculo*/)
+			 if (ultrasonidos.getDistance()>17)
 			 {
 				 /**si no hay lata haz el siguelineas*/
 				//Si los dos sensores ven blanco
@@ -122,7 +123,7 @@ public class SigueLineas {
 		
 	}
 	/**
-	 * @return *******************************************************************************************/
+	 * *******************************************************************************************/
 
 	public void EntrarSala(){
 		pilot.travel(100);
