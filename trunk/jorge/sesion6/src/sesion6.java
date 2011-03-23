@@ -17,6 +17,7 @@ import lejos.robotics.navigation.*;
 		
 		
 		private static SoundSensor sound;
+		private static Motor armMotor;
 		
 		/**
 		 * @param args
@@ -33,16 +34,222 @@ import lejos.robotics.navigation.*;
 	        pilot.setSpeed(500);
 
 			
-			//1.Rotar 1175 grados
-			pilot.rotate(1175);
-			//2.Espera de 2 segundos
-			int miliseconds = 2000;
+			//1.Rotar 1165 grados
+			pilot.rotate(1165);
+			//2.Espera de 1 segundos
+			int miliseconds = 1000;
 			try {Thread.sleep(miliseconds);} catch (Exception e) {}
 			//3.Zig zag hacia derecha
-			pilot.travelArc(-50,-25);
+			pilot.travelArc(-90,-35);
 			//4.Zig zag hacia izquierda
-			pilot.travelArc(50,25);
-			 
-			 
+			pilot.travelArc(65,25); 
+			//5.Rotar 360 grados
+			pilot.rotate(360);
+			//6.Ir hacia delante
+			pilot.forward();
+			miliseconds = 6000;
+			//7.Zig Zag hacia derecha
+			pilot.travelArc(-100,-90);
+			//8.Zig Zag hacia izquierda
+			pilot.travelArc(100,90);
+			//9.Ir hacia delante
+			pilot.forward();
+			miliseconds = 2000;
+			//10.Ir hacia atrás
+			pilot.backward();
+			miliseconds = 3000;
+			//11.Mover brazos hacia delante 4 segundos
+			armMotor.forward();
+			miliseconds = 4000;
+			//12.El motor de los brazos se para
+			armMotor.stop();	
+			//13.Mover brazos hacia atras 3.5 segundos
+			armMotor.backward();
+			miliseconds = 3500;
+			
+			
+			
+			
+	
+			
+			
+	
+	
+			
+			
+			
+			
+			
+			
+
+			
+
+
+
+
+
+
+
+			
+			
+			
+
+			
+			
+
+			
+			
+			
+			
+
+
+
+
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+	
 		}
 }
