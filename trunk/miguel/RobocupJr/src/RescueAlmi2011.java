@@ -29,6 +29,8 @@ public class RescueAlmi2011 {
 		
 		
 		while(tiltValue>tiltUmbral){
+			tiltValue = tilt.getXTilt();
+			
 			Rampa.subir();
 			Rampa.wait(1000);
 			Rampa.girar();
@@ -36,12 +38,6 @@ public class RescueAlmi2011 {
 		
 		//Tarea de la rampa
 		
-		Rampa rampa = new Rampa();
-		
-		rampa.subir();
-		while(tiltValue<tiltUmbral){
-			sl.wait(1);
-		}
 		sl.parar();
 		sl.EntrarSala();
 		

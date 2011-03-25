@@ -113,27 +113,16 @@ public class SigueLineas {
 				 	pilot.rotate(45);
 				 	
 					//incorporarse 					 
-<<<<<<< .mine
 				 	while ((lightleft.readValue() > valuellwhite) 
 							&&  (lightright.readValue() > valuelrwhite )){
+				 	
 				 			pilot.travel(1);
 				 		
 				 		}
 				 	
 				 	pilot.rotate(30);
 					 
-				 }
-		
-=======
-				 While ((lightleft.readValue() > valuellwhite) 
-							&&  (lightright.readValue() < valuelrwhite ))
-						if ((lightleft.readValue() < valuellwhite) 
-								&&  (lightright.readValue() < valuelrwhite )){
-							pilot.rotate (30)
-							
-						}
-							
->>>>>>> .r105
+				 }	
 	}
 	/**
 	 * *******************************************************************************************/
