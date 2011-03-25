@@ -100,6 +100,8 @@ import lejos.robotics.navigation.TachoPilot;
 				
 				int miliseconds = 0;
 				
+
+				
 				//14.Hace un giro de 30º
 				pilot.rotate(30);
 				//15.Espera de 0'3 segundos
@@ -273,9 +275,10 @@ import lejos.robotics.navigation.TachoPilot;
 				pilot.travelArc(20, 30);
 
 			}
+			
 			private static void bloque7(){
 				int soundValue = 0;
-				
+
 				//while(!Button.ENTER.isPressed()){
 				for(int i = 0; i<=10000;i++){	
 					
@@ -284,8 +287,8 @@ import lejos.robotics.navigation.TachoPilot;
 					
 					int miliseconds = 100;
 					
-					if(soundValue > 40
-					){
+					if((soundValue > 40)&&
+					   (soundValue < 70)){
 						armMotor.forward();
 						try {Thread.sleep(miliseconds);} catch (Exception e) {}
 						armMotor.stop();
@@ -293,8 +296,10 @@ import lejos.robotics.navigation.TachoPilot;
 						try {Thread.sleep(miliseconds);} catch (Exception e) {}
 						armMotor.stop();
 						luz();
-			
-					if(soundValue > 40){
+					}
+					
+					if((soundValue > 40)&&
+					   (soundValue < 70)){
 						armMotor.backward();
 						try {Thread.sleep(miliseconds);} catch (Exception e) {}
 						armMotor.stop();
@@ -302,16 +307,40 @@ import lejos.robotics.navigation.TachoPilot;
 						try {Thread.sleep(miliseconds);} catch (Exception e) {}
 						armMotor.stop();
 						luz();
+					}
 					
 					if(soundValue > 85){
 						pilot.rotate(360);
+					}
 					
+					if((soundValue > 40)&&
+					(soundValue < 60)){
+						pilot.forward();
+					}
 					
+					if((soundValue > 45)&&
+					   (soundValue < 70)){	
+						light.setFloodlight(true);
+					}else{
+						light.setFloodlight(false);
+					
+					}
+					if((soundValue > 60)&&
+					(soundValue < 80))	{
+						pilot.backward();
+					
+					if((soundValue > 70)&&
+					   (soundValue < 100))		
+						armMotor.smoothAcceleration(true);
+						
+
 					}
 					LCD.drawString("I:"+ i, 0,4);
-					}
-				}}	
+				}
 			}
+			
+
+		
 			public static void main(String[] args) {
 
 				//Instanciar
