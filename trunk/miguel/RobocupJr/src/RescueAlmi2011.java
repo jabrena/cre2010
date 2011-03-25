@@ -8,6 +8,7 @@ public class RescueAlmi2011 {
 	public static void main(String[] args) throws InterruptedException {
 		TiltSensor tilt = new TiltSensor(SensorPort.S4);
 		SigueLineas sl = new SigueLineas();
+		Rampa Rampa = new Rampa(); 
 		sl.calibrar();
 		
 		//Tarea de seguir lineas
@@ -21,6 +22,16 @@ public class RescueAlmi2011 {
 		
 		while(tiltValue<tiltUmbral){
 			sl.task();
+		}
+		
+		Rampa.subir();
+		Rampa.wait(1000);
+		
+		
+		while(tiltValue>tiltUmbral){
+			Rampa.subir();
+			Rampa.wait(1000);
+			Rampa.girar();
 		}
 		
 		//Tarea de la rampa

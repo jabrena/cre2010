@@ -16,9 +16,20 @@ public class Rampa {
 	}	
 	public void subir(){
 		pilot.forward();
+		
+	}
+	public void girar (){
+		pilot.rotate(10);
 	}
 	
-	public Rampa(){
+	public void subirRampa(){
+		
+	}
+	public  void wait (int miliseconds) {
+		try {Thread.sleep(miliseconds);} catch (Exception e) {}
+
+	}
+		public Rampa(){
 		//Instanciar 
 		motorleft =  Motor.A;
 		motorright =  Motor.C;
