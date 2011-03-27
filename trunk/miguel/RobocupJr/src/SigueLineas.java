@@ -111,19 +111,19 @@ public class SigueLineas {
         		parar();
         		wait(1000);
         		/**si hay lata*/
-        		int dist1 = 17 ;
+        		int dist1 = 14;
         		//esquivar lata
         		//girar hacia la derecha 45º
-        		pilot.rotate(-45);
+        		pilot.rotate(-70);
         		//avanzar 
         		pilot.travel(dist1);
         		//girar a la izquierda
-        		pilot.rotate(45);
+        		pilot.rotate(65);
 
-        		pilot.travel(18);
+        		pilot.travel(22);
 
-        		pilot.rotate(45);
-
+        		pilot.rotate(60);
+        		pilot.travel(3);
         		//incorporarse                                   
         		while ((lightleft.readValue() > valuellwhite) 
         				&&  (lightright.readValue() > valuelrwhite )){
