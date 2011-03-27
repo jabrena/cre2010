@@ -29,7 +29,7 @@ public class Rampa {
 		try {Thread.sleep(miliseconds);} catch (Exception e) {}
 
 	}
-		public Rampa(){
+		public Rampa(){ 
 		//Instanciar 
 		motorleft =  Motor.A;
 		motorright =  Motor.C;
