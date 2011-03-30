@@ -27,11 +27,61 @@ import lejos.robotics.navigation.TachoPilot;
 			private static Motor armMotor;
 			private static LightSensor light;
 			private static SoundSensor sound;
+
+			private static void bloque1_1(){
+				
+				Sound.beep();
+				
+
+				flash();
+					
+				  
+				//1.Espera de 3 segundos
+				int miliseconds = 0;flash(); flash(); flash(); flash(); flash(); flash(); flash(); flash(); flash(); flash();
+				//2.Giro hacia el lado derecho mientras avanza
+				pilot.travelArc(12, 10);
+				flash(); flash(); flash(); flash(); flash(); flash(); flash(); flash(); flash(); flash();
+				//3.Vuelve a la posicion inicial
+				pilot.travelArc(-12, -10);	
+				//4.Espera de 1 segundo
+				miliseconds = 1000;
+				flash();
+				//5.Gira hacia el lado izquierdo mientras avanza
+				pilot.travelArc(-12, -10);
+				//6.Vuelve nuevamente a la posicion inicial
+				pilot.travelArc(12, 10);
+				flash();flash();flash();flash();flash();flash();flash();flash();flash();flash();flash();
+				//2.Giro hacia el lado derecho mientras avanza
+				pilot.travelArc(12, 10);
+				//3.Vuelve a la posicion inicial
+				pilot.travelArc(-12, -10);	
+				flash();flash();flash();flash();flash();flash();flash();flash();flash();flash();flash();
+				//4.Espera de 1 segundo
+				miliseconds = 1000;
+				//5.Gira hacia el lado izquierdo mientras avanza
+				pilot.travelArc(-12, -10);
+				//6.Vuelve nuevamente a la posicion inicial
+				pilot.travelArc(12, 10);
+				//2.Giro hacia el lado derecho mientras avanza
+				pilot.travelArc(12, 10);
+				flash();flash();flash();flash();flash();flash();flash();flash();flash();flash();flash();flash();
+				//3.Vuelve a la posicion inicial
+				pilot.travelArc(-12, -10);	
+				//4.Espera de 1 segundo
+				miliseconds = 1000;
+				flash();flash();flash();flash();flash();flash();flash();flash();flash();flash();flash();flash();
+				//5.Gira hacia el lado izquierdo mientras avanza
+				pilot.travelArc(-12, -10);
+				//6.Vuelve nuevamente a la posicion inicial
+				pilot.travelArc(12, 10);
+				flash();flash();flash();flash();flash();flash();flash();flash();flash();flash();flash();
+
+			}
 			
 			private static void bloque1(){
 				
 				Sound.beep();
-				
+			    
 				//1.Espera de 3 segundos
 				int miliseconds = 0;
 				//2.Giro hacia el lado derecho mientras avanza
@@ -231,7 +281,6 @@ import lejos.robotics.navigation.TachoPilot;
 			
 			private static void bloque6(){
 				
-				Sound.beep();
 				
 				int miliseconds = 0;
 
@@ -332,7 +381,8 @@ import lejos.robotics.navigation.TachoPilot;
 					if((soundValue > 70)&&
 					   (soundValue < 100))		
 						armMotor.smoothAcceleration(true);
-						
+					
+					
 
 					}
 					LCD.drawString("I:"+ i, 0,4);
@@ -356,30 +406,28 @@ import lejos.robotics.navigation.TachoPilot;
 				
 				sound = new SoundSensor(SensorPort.S2);
 				light = new LightSensor(SensorPort.S3);
+				light.setFloodlight(false);
 
 				
 				
 			
 				
-				/*
-				bloque1();
+				
+				bloque1_1();
 				bloque2();
 				bloque3();
 				bloque4();
 				luz();
 				bloque5();
 				luz();
-				bloque6();
+				//bloque6();
 				
-				*/				
+								
 				
 				bloque7();
 			}
 			
-			private static void While(boolean b) {
-				// TODO Auto-generated method stub
-				
-			}
+
 
 			private static void luz(){
 				Random random = new Random();
@@ -393,6 +441,20 @@ import lejos.robotics.navigation.TachoPilot;
 				}
 			}
 			
+			private static void flash(){
+				int soundValue = 0;
+				soundValue = sound.readValue();
+				LCD.drawString("I:"+soundValue, 0,4);
+				
+				if ((soundValue >35)&&
+				 (soundValue <60)){
+				
+					light.setFloodlight(true);
+				}else{
+					light.setFloodlight(false);
+
+				}
+			}
 
 	}
 
