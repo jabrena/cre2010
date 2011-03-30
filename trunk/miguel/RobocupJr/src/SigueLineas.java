@@ -33,7 +33,8 @@ public class SigueLineas {
         /*********************************************************************************************/
         
         public void calibrar (){
-                System.out.println("calibrarblanco");
+
+        		System.out.println("calibrarblanco");
                 
                 Button.waitForPress();
                 valuellwhite = lightleft.readValue();
@@ -41,7 +42,7 @@ public class SigueLineas {
                 
                 System.out.println(valuellwhite);
                 System.out.println(valuelrwhite);
-                System.out.println("calibrarnegro");
+                System.out.println("calibrarnegro");  
                 
                 Button.waitForPress();
                 
@@ -64,7 +65,9 @@ public class SigueLineas {
         /*********************************************************************************************/
 
         public void task (){
-
+        	
+        	motorright.setPower(30);
+        	motorleft.setPower(30);
         	if (ultrasonidos.getDistance()>10)
         	{
         		/**si no hay lata haz el siguelineas*/
@@ -142,10 +145,53 @@ public class SigueLineas {
         }
 
 
-        /**
-         * *******************************************************************************************/
+        /*****************************************************************************************/
+        public void task2 (){
+        	motorright.setPower(70);
+        	motorleft.setPower(70);
+        	
+        		if ((lightleft.readValue() > valuellwhite) 
+        				&&  (lightright.readValue() > valuelrwhite ))
+        		{
+        			//Avanzas
 
-        public void EntrarSala(){
+        			motorleft.forward();
+        			motorright.forward();
+        			wait(1);
+        		}
+        		//Sensor izquierdo ve negro y el sensor derecho blanco
+        		else if ((lightleft.readValue() < valuellblack)
+        				&&(lightright.readValue() > valuelrwhite))
+        		{
+
+        			//gira a la izquierda
+        			parar();
+        			motorleft.backward();
+        			motorright.forward();
+        			wait(100);
+        			//Si el sensor izquierdo blanco y el derecho negro
+        		}else if ((lightleft.readValue() > valuellwhite)
+        				&&(lightright.readValue() < valuelrblack)){
+
+        			//gira a la derecha
+        			parar();
+
+        			motorleft.forward();
+        			motorright.backward();
+        			wait(100);
+
+
+        		}else{ 
+        			parar(); 
+        			LCD.drawString("Otros", 0,7);
+        			pilot.travel(1);
+        		}                                       
+
+        }
+
+         /********************************************************************************************/
+
+        public void EntrarSala(){ 
                 pilot.travel(100);
                 pilot.rotate(90);
                 pilot.travel(100);
@@ -177,6 +223,7 @@ public class SigueLineas {
 
                 
         }
+
         
         /*
          public static void main(String[] args){

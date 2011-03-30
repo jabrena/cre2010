@@ -14,7 +14,7 @@ public static int tiltvalue = 0;
 				System.out.println(tiltvalue);					
 				Button.waitForPress();
 				try {Thread.sleep(1000);} catch (Exception e) {} 
-					 
+					  
 			}
 		}	
 	} 

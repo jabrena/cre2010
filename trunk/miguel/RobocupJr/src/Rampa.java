@@ -8,7 +8,7 @@ public class Rampa {
 	private TachoPilot pilot;
 	private final float wheeldiameter = 5.0f;
 	private final float wheelseparation = 16.0f ;
-	public int power = 30;
+	public int power = 80;
 	
 	public void parar(){
 		pilot.stop();
@@ -27,7 +27,7 @@ public class Rampa {
 	}
 	public  void wait (int miliseconds) {
 		try {Thread.sleep(miliseconds);} catch (Exception e) {}
-
+ 
 	}
 		public Rampa(){ 
 		//Instanciar 
@@ -35,7 +35,7 @@ public class Rampa {
 		motorright =  Motor.C;
 
 		pilot = new TachoPilot(wheeldiameter, wheelseparation, motorleft, motorright, false);
-		pilot.setSpeed(300);
+		pilot.setSpeed(800);
 		
 		motorright.setPower(power);
 		motorleft.setPower(power);

@@ -1,48 +1,56 @@
 import lejos.nxt.*;
-import lejos.nxt.SensorPort;
 import lejos.nxt.addon.TiltSensor;
+import lejos.util.Delay;
 
 public class RescueAlmi2011 {
 
-	public static void main(String[] args) throws InterruptedException {
+	public static void main(String[] args) {
+
+		//
+		int tiltValue = 0;
+		int tiltUmbral = 15;
 		TiltSensor tilt = new TiltSensor(SensorPort.S4);
 		SigueLineas sl = new SigueLineas();
-		//Rampa Rampa = new Rampa(); 
+
 		sl.calibrar();
+
 		Button.waitForPress();
+		
 		//Tarea de seguir lineas
 
-		int tiltValue = 0;
 		tiltValue = tilt.getXTilt();
-		int tiltUmbral = 15;
+		System.out.println("" + tiltValue);
 
-		while (!Button.ESCAPE.isPressed()){
+		
+			while (((tiltValue>100))
+				&& (tiltValue<7)){
 			
-			//tiltValue = tilt.getXTilt();
-			//while(tiltValue<tiltUmbral){
-				sl.task();
-				//tiltValue = tilt.getXTilt();
-			//}
-
-			//Rampa.subir();
-			//Rampa.wait(1000);
-
-
-		/**	while(tiltValue>tiltUmbral){
+				System.out.println("" + tiltValue);
 				tiltValue = tilt.getXTilt();
-
-				Rampa.subir();
-				Rampa.wait(1000);
-				Rampa.girar();
+				//Delay.msDelay(1000);
+				sl.task();
 			}
+			Sound.beep();
 
-			//Tarea de la rampa
 
-			sl.parar();
-			sl.EntrarSala();
-		 	*/
+		/**while(tiltValue>tiltUmbral){
+			sl.task2();
+			tiltValue = tilt.getXTilt();
+
+		}
+*/
+		//Tarea de la rampa
+		
+
+		//sl.parar();
+		//sl.wait(1000);
+			}
 		}
 
-	}
 
-}
+		//	sl.EntrarSala();
+
+
+
+
+
