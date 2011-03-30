@@ -1,6 +1,5 @@
 		
-		import lejos.nxt.Motor;
-		import lejos.nxt.SoundSensor;
+		import lejos.nxt.*;
 		import lejos.robotics.navigation.TachoPilot;
 
 
