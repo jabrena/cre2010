@@ -446,13 +446,13 @@ import lejos.robotics.navigation.TachoPilot;
 				soundValue = sound.readValue();
 				LCD.drawString("I:"+soundValue, 0,4);
 				
-				if ((soundValue >35)&&
-				 (soundValue <60)){
+				if (soundValue >35){
 				
 					light.setFloodlight(true);
 				}else{
 					light.setFloodlight(false);
 
+					
 				}
 			}
 
