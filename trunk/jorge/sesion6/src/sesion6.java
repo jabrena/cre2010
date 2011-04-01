@@ -22,9 +22,14 @@ import lejos.robotics.navigation.*;
 		/**
 		 * @param args
 		 */
+		public static void wait (int miliseconds){
+			try {Thread.sleep(miliseconds);} catch (Exception e) {}
+			
+		}
+		
 		public static void main(String[] args){
 	
-			light = new LightSensor(SensorPort.S1);
+			light = new LightSensor(SensorPort.S3);
 
 			//Instanciar
 			leftMotor = Motor.A;
@@ -167,6 +172,13 @@ import lejos.robotics.navigation.*;
 			miliseconds = 1000;
 			//46.Giro hacia el lado derecho mientras avanza
 			pilot.travelArc(20, 30);
+			int num = 0 ;
+			while(num<20)
+			{
+			pilot.travel(1);
+			pilot.travel(-1);
+			num=num+1 ;	
+			}
 			//47.Posicion inicial
 			pilot.travelArc(-20, -30);
 			//48.Rotar dos vueltas
@@ -253,10 +265,19 @@ import lejos.robotics.navigation.*;
 			pilot.rotate(360);
 			//75.Ir hacia atras
 			pilot.backward();
+			num = 0;
+			while(num<20)
+			{
+			pilot.travel(1);
+			pilot.travel(-1);
+			num=num+1 ;	
+			}
 			miliseconds = 7000;
 			//78.Se para
 			pilot.stop();
 			miliseconds = 3000 ;
+			light.setFloodlight(true);
+			
 			//79.Ir hacia atras
 			pilot.backward();
 			miliseconds = 2000;
@@ -276,15 +297,15 @@ import lejos.robotics.navigation.*;
 			pilot.rotate(720);
 			//85.Ir hacia delante
 			pilot.forward();
-			miliseconds = 4000;
+			miliseconds = 9000;
 			//86.Ir hacia atras mientras mueve brazos hacia atras
 			pilot.backward();
 			miliseconds = 3000;
 			armMotor.backward();
-			miliseconds = 3000;
+			miliseconds = 2000;
 			//87.Se para
 			pilot.stop();
-			miliseconds = 2000;
+			miliseconds = 5000;
 			//88.Ir hacia delante
 			pilot.forward();
 			miliseconds = 3000;
@@ -295,11 +316,31 @@ import lejos.robotics.navigation.*;
 			pilot.rotate(360);
 			//91.Ir hacia atras
 			pilot.backward();
-			miliseconds = 5000;
-			
-			
-			
-			
+			miliseconds = 6000;
+			//92.Rotar 720 grados
+			pilot.rotate(720);
+			//93.Se para
+			pilot.stop();
+			miliseconds = 4000;
+			//94.Ir hacia delante mientras mueve los brazos
+			pilot.forward();
+			miliseconds = 3000;
+			armMotor.backward();
+			miliseconds = 3000;
+			//95.Ir hacia atras mientras mueve los brazos
+			pilot.backward();
+			miliseconds = 3000;
+			armMotor.forward();
+			miliseconds = 3000;
+			//96.Giro de 360 grados
+			pilot.rotate(360);
+			num = 0 ;
+			while(num<20)
+			{
+			pilot.travel(1);
+			pilot.travel(-1);
+			num=num+1 ;	 
+			}
 			
 		
 			
