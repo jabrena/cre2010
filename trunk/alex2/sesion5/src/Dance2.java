@@ -37,7 +37,8 @@ import lejos.robotics.navigation.TachoPilot;
 					
 				  
 				//1.Espera de 3 segundos
-				int miliseconds = 0;flash(); flash(); flash(); flash(); flash(); flash(); flash(); flash(); flash(); flash();
+				int miliseconds = 0;
+				flash(); flash(); flash(); flash(); flash(); flash(); flash(); flash(); flash(); flash();
 				//2.Giro hacia el lado derecho mientras avanza
 				pilot.travelArc(12, 10);
 				flash(); flash(); flash(); flash(); flash(); flash(); flash(); flash(); flash(); flash();
@@ -224,7 +225,7 @@ import lejos.robotics.navigation.TachoPilot;
 				int miliseconds = 0;
 				
 				//39.Realiza 4 vueltas
-				pilot.rotate(1455);
+				pilot.rotate(1440);
 				//40.Hace una espera de 0'5 segundos
 				miliseconds = 500;
 				try {Thread.sleep(miliseconds);} catch (Exception e) {}
@@ -366,6 +367,7 @@ import lejos.robotics.navigation.TachoPilot;
 					(soundValue < 60)){
 						pilot.forward();
 					}
+					
 					
 					if((soundValue > 45)&&
 					   (soundValue < 70)){	
