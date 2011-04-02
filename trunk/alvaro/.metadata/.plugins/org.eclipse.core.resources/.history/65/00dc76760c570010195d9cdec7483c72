@@ -1,0 +1,184 @@
+import lejos.nxt.*;
+import lejos.robotics.navigation.TachoPilot;
+/*********************************************************************************************/
+
+public class SigueLineas {
+	/*********************************************************************************************/
+		
+	private Motor motorleft;
+	private Motor motorright;
+	private TachoPilot pilot;
+	private final float wheeldiameter = 5.0f;
+	private final float wheelseparation = 16.0f ;
+	public int power = 70 ;
+	
+	private LightSensor lightleft;
+	private LightSensor lightright;
+	private int valuellwhite = 0;
+	private int valuelrwhite = 0;
+	private int valuellblack = 0;
+	private int valuelrblack = 0;
+	private UltrasonicSensor ultrasonidos = new UltrasonicSensor(SensorPort.S3);
+	
+
+	/**instancio la CAM*/
+
+
+	
+/************************************************************************************/	
+	private void wait (int miliseconds) {
+		try {Thread.sleep(miliseconds);} catch (Exception e) {}
+		
+	}
+	/*********************************************************************************************/
+	public void parar(){
+		motorleft.stop();
+		motorright.stop();
+	}
+	/*********************************************************************************************/
+	
+	public void calibrar (){
+		System.out.println("calibrarblanco");
+		
+		Button.waitForPress();
+		valuellwhite = lightleft.readValue();
+		valuelrwhite = lightright.readValue();
+		
+		System.out.println(valuellwhite);
+		System.out.println(valuelrwhite);
+		System.out.println("calibrarnegro");
+		
+		Button.waitForPress();
+		
+		valuellblack = lightleft.readValue();
+		valuelrblack = lightright.readValue();
+		
+		System.out.println(valuellblack);
+		System.out.println(valuellblack);
+		System.out.println("calibrado");
+		
+		
+	}
+	/*********************************************************************************************/
+	
+	public void task (){
+		
+			 if (ultrasonidos.getDistance()>17)
+			 {
+				 /**si no hay lata haz el siguelineas*/
+				//Si los dos sensores ven blanco
+					if ((lightleft.readValue() > valuellwhite) 
+							&&  (lightright.readValue() > valuelrwhite ))
+					{
+						//Avanzas
+						motorleft.forward();
+						motorright.forward();
+						wait (1);
+					}
+					//Sensor izquierdo ve negro y el sensor derecho blanco
+					else if ((lightleft.readValue() < valuellblack)
+								&&(lightright.readValue() > valuelrwhite))
+					{
+						parar();
+						//gira a la izquierda
+						pilot.rotate(10);
+					//Si el sensor izquierdo blanco y el derecho negro
+					}else if ((lightleft.readValue() > valuellwhite)
+							&&(lightright.readValue() < valuelrblack)){
+						
+						parar();
+						//gira a la derecha
+						pilot.rotate(-10);
+						
+						wait(1);
+						
+					}else{ 
+						parar(); 
+						LCD.drawString("Otros", 0,7);
+					}
+
+			 }else{
+				 /**si hay lata*/
+				 int dist1 = 100 ;
+				 //esquivar lata
+				 	//girar hacia la derecha 45º
+				 	pilot.rotate(-45);
+				 	//avanzar 
+				 	pilot.travel(dist1);
+				 	//girar a la izquierda
+				 	pilot.rotate(45);
+				 	
+				 	pilot.travel(300);
+				 	
+				 	pilot.rotate(45);
+				 	
+					//incorporarse 					 
+				 	pilot.travel(dist1);
+				 	
+				 	pilot.rotate(-45);
+				 	
+				 	pilot.travel(100);
+				 	
+				 }
+		
+	}
+	/**
+	 * *******************************************************************************************/
+
+	public void EntrarSala(){
+		pilot.travel(100);
+		pilot.rotate(90);
+		pilot.travel(100);
+		
+	}
+	/*********************************************************************************************/
+	
+	/*
+	 * 
+	 */
+	public SigueLineas(){
+		//Instanciar 
+		motorleft =  Motor.A;
+		motorright =  Motor.C;
+
+		pilot = new TachoPilot(wheeldiameter, wheelseparation, motorleft, motorright, false);
+		pilot.setSpeed(300);
+		
+		motorright.setPower(power);
+		motorleft.setPower(power);
+		
+	 
+		lightleft = new LightSensor(SensorPort.S1);
+		lightright = new LightSensor(SensorPort.S2);
+		// enciende la luz de los sensores
+		lightright.setFloodlight(true);
+		lightleft.setFloodlight(true);
+		
+
+		
+		valuellwhite = valuellwhite - 10 ;
+		valuelrwhite = valuelrwhite - 10 ;
+
+		valuellblack = valuellblack + 10;
+		valuelrblack = valuelrblack + 10;
+	}
+	
+	/*
+	 public static void main(String[] args){
+
+		
+		//programa principal
+		
+		calibrar();
+		Button.waitForPress();
+		siguelineas();
+		
+		
+	 }
+
+*/
+	
+	
+	 /*********************************************************************************************/
+		
+}
