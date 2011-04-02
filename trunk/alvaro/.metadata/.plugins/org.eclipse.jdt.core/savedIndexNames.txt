@@ -1,3 +1,0 @@
-INDEX VERSION 1.126+C:\Documents and Settings\ÁLVARO\Mis documentos\SVN\cre2010\alvaro\.metadata\.plugins\org.eclipse.jdt.core
-3457785842.index
-1067094681.index
