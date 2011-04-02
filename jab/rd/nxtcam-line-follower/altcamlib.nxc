@@ -1,0 +1,444 @@
+/************************************************************************/
+/*                                                                      */
+/* Program Name: altcamlib.nxc                                          */
+/* ===========================                                          */
+/*                                                                      */
+/* Copyright (c) 2008 by mindsensors.com                                */
+/* Email: info (<at>) mindsensors (<dot>) com                           */
+/*                                                                      */
+/* This program is free software. You can redistribute it and/or modify */
+/* it under the terms of the GNU General Public License as published by */
+/* the Free Software Foundation; version 3 of the License.              */
+/* Read the license at: http://www.gnu.org/licenses/gpl.txt             */
+/*                                                                      */
+/************************************************************************/
+
+/*
+  altcamlib.nxc
+  An NXTCam library by Erin Delisle and Alejandro Erickson
+  with a thing or two borrowed from Deepak Patil's "nxtcamlib.nxc"
+  June 2009
+  */
+
+// Constants associated with NXTCam.
+//See NXTCam-v2-User-Guide.pdf for details
+#define CAMADDR 0x02
+//write to this register to send a command to the camera
+#define NXTCAM_REG_CMD      0x41
+//contains the number of tracked objects
+#define NXTCAM_REG_COUNT    0x42
+//first register containing data for tracked objects
+#define NXTCAM_REG_DATA     0x43
+#define INPUTS_OUT_OF_RANGE -1
+#define COLOURMAP_READY 0
+#define BAD_DATA_FROM_CAM -1
+#define min(a,b) (a<b?a:b)
+#define max(a,b) (a>b?a:b)
+inline void noCommpending(byte camport){
+  while (I2CCheckStatus(camport) ==  STAT_COMM_PENDING);
+}
+//dumps any bytes that the nxtcam is ready to send.
+//returns a negative number (see table 50 of guide) if
+//any of the reads fails.
+//camport:  the port on the NXT brick connecting to the nxtcam.
+//          either IN_1, IN_2, IN_3 or IN_4
+int nxtcamFlush(byte camport){
+  int n;
+  int err;
+  byte dump[8];
+  
+
+  noCommpending(camport);
+
+  n = I2CBytesReady(camport);
+  while(n > 0 && err >= 0){
+    noCommpending(camport);
+    //dump up to 8 bytes at a time until none are left.
+    //reasonable since the nxtcam doesn't have that many registers...
+    
+    if(n>8){
+      err = I2CRead(camport, 8, dump);
+    } else {
+      err = I2CRead(camport, n , dump);
+    }
+
+    noCommpending(camport);//Erin: unnecessary?  
+    n = I2CBytesReady(camport);
+  }
+  return err;
+}
+/*
+//nxtcamReadregblock requests blocksize bytes from the nxtcam,
+//  starting with reg
+//  returns true if bytes succesfully read and otherwise false
+//camport:  the port on the NXT brick connecting to the nxtcam.
+//          either IN_1, IN_2, IN_3 or IN_4
+//reg:  the register you will start reading at.
+//blocksize:  the number of registers you will read
+//outbuff:  the reply will be stored here.  must be have at least size
+//          blocksize.
+int nxtcamReadregblock(byte camport,byte reg, int blocksize, byte & outbuff[]){
+  byte request[3];
+  int thisblocksize;
+  int i;
+  //  byte cnt;
+
+  //fill outbuff with at most 16 bytes at a time (this is the maximum)
+  for(i=0;blocksize>0;i++){
+    
+    thisblocksize = min(blocksize,16);
+    blocksize -= thisblocksize;
+    ArrayBuild(request,CAMADDR,reg,thisblocksize);
+    noCommpending(camport);
+    //is this right?
+    if(!(I2CBytes(camport, request, thisblocksize, outbuff[i*16])))
+      return false;
+  }
+}
+*/
+//deprecated
+int nxtcamReadonereg(byte camport, byte reg){
+  byte inbuff[2], outbuff[1];
+  int n=1, j;
+  ArrayBuild(inbuff,CAMADDR, reg);
+  while (I2CCheckStatus(camport) ==  STAT_COMM_PENDING);
+  if(!(I2CBytes(camport,inbuff, n, outbuff)))
+    TextOut(0, LCD_LINE8, "AAAAAAAAAAAAAAAAH");
+  //  while (I2CCheckStatus(camport) ==  STAT_COMM_PENDING);
+  return outbuff[0];
+}
+
+//nxtcamSendCommand writes to register NXTCAM_REG_CMD and presumably
+//the camera executes what you wrote as a command.  Waits 100
+//to give the command a chance to execute.
+//returns the result of I2CWrite.  See Table 50 of nxc_guide.pdf
+//currently this has a bug and seems to do nothing in some instances
+//camport:  the port on the NXT brick connecting to the nxtcam.
+//          either IN_1, IN_2, IN_3 or IN_4
+//command:  see nxtcam documentation for a list.
+int nxtcamSendCommand(byte camport, byte command){
+  byte writebuffer[3];
+  int n;
+  ArrayBuild(writebuffer, CAMADDR, NXTCAM_REG_CMD, command);
+  noCommpending(camport);
+  n = I2CWrite(camport, 0, writebuffer);
+  nxtcamFlush(camport);//Erin: we shouldn't have to do this
+  Wait(100);//Erin: the nxtcam needs time to execute its command?
+  return n;
+}
+
+
+/*******************
+  inline command functions.  I have tried to elaborate on their
+  descriptions from the guide, ask some questions and mention
+  issues.
+camport:  the port on the NXT brick connecting to the nxtcam.
+          either IN_1, IN_2, IN_3 or IN_4
+********************/
+
+//Command 'E' is "Enable Tracking".  This can be done from
+//NXTCamView in the "tracking" window.  It is not clear
+//whether or not this should be sent after turning on
+//object or line tracking.
+inline int nxtcamEnabletrack(byte camport){
+  return  nxtcamSendCommand(camport,'E');
+}
+
+//Command 'D' is "Disable Tracking".  I have not been able to
+//get the camera to start tracking again with 'E' after sending
+//this command.
+inline int nxtcamDisabletrack(byte camport){
+ return  nxtcamSendCommand(camport,'D');
+}
+
+//Command 'S'  "Sort tracked objects by Size".  by Size does it
+//mean area?  Largest to smallest presumably.  If the nxtcam sees
+//nobjects objects (or lines?), then the first (of 5) registers
+//for each object are at 0x43 + 0*5, 0x43 + 5, 0x43 + 2*5, ...
+//, 0x43 + (nobjects-1)*5.
+inline int nxtcamSortbysize(byte camport){
+return  nxtcamSendCommand(camport,'A');
+}
+
+//Command 'U' "Sort tracked objects by colour".  Presumably this
+//uses the same ordering as your colourmap.  that is objects with
+//colour 0 first, then colour 1 and so on.
+//What happens if both 'A' and 'U' are on at the same time?
+//are objects sorted by colour and then size?  or size first?
+//the former seems better if 'A' and 'U' works at all.
+inline int nxtcamSortbycolour(byte camport){
+  return nxtcamSendCommand(camport,'U');
+}
+
+//Command 'X' "Do not Sort tracked objects".  Self explanatory.
+//however, in line tracking mode, if the nxtcam sees only one line
+//the objects are sorted from top to bottom (or other way around?
+//will test)
+inline int nxtcamNosort(byte camport){
+return  nxtcamSendCommand(camport,'X');
+}
+
+//Command 'B' "Select Object tracking mode".  This command
+//seems to be bugged and usually does nothing useful or nothing
+//at all.  This command is important and we really want it to work
+//properly
+inline int nxtcamTrackobjects(byte camport){
+  return nxtcamSendCommand(camport,'B');
+}
+
+//Command 'L' "Select Line tracking mode".  This command
+//seems to be bugged and usually does nothing useful or nothing
+//at all. This command is important and we really want it to work
+//properly
+inline int nxtcamTracklines(byte camport){
+ return  nxtcamSendCommand(camport,'L');
+}
+
+//Command 'R' "Reset Camera Engine".  does this erase your colourmap?
+//what is it good for?
+inline int nxtcamReset(byte camport){
+return  nxtcamSendCommand(camport,'R');
+}
+
+//Command 'S' "Send the colour map to camera Engine".  Haven't used this
+//succesfully yet.
+inline void colourmaptoEngine(byte camport){
+  nxtcamSendCommand(camport,'S');
+}
+
+//Command 'C' "Write to Camera Registers".  Note the warning in the
+//NXTCam-v2-User-Guide.  The Camera Registers appear to be the
+//15 registers from 0x6C to 0x7B.  See guide page 11 for usage.
+//I do not know what this does.
+inline void writetoCam(byte camport){
+  nxtcamSendCommand(camport,'C');
+}
+
+/************/
+
+//nxtcamInit tells the brick that camport is an I2C device and
+//flushes and bytes that the cam wants to send.  returns any errors
+//that nxtcamFlush produces
+int nxtcamInit(byte camport){
+  SetSensorLowspeed(camport);
+  return nxtcamFlush(camport);
+}
+
+//nxtcamGetdata reads the number of tracked objects (or line chunks)
+//from register 0x42 and gets the tracking data from 0x43 to
+//0x43 +5*(ndatapoints-1)
+//returns negative int upon failure
+//(x1[i],y1[i]) is the top left coordinate of
+//    the ith object (or line chunk)
+//(x2[i],y2[i]) is the bottom left coordinate of
+//    the ith object (or line chunk)
+//colour[i] is the colour number of the ith object (or line chunk).
+//the colour number shows up either in NXTCamView or it is encoded
+//in your colour map.  It is in the range 0..7
+//the arrays should be 8 elements.
+
+int nxtcamGetdata(byte camport,
+		   int &ndatapoints,
+		   int &colour[],
+		   int &x1[],
+		   int &y1[],
+		   int &x2[],
+		   int &y2[]){
+
+  byte message[];
+  byte reply[5];
+  int n,i;
+  byte cnt = 1;
+
+  nxtcamFlush(camport);//Erin: why do we do this?
+
+
+
+  ArrayBuild(message, CAMADDR, NXTCAM_REG_COUNT);
+  noCommpending(camport);
+  I2CBytes(camport,message,cnt,reply);
+  ndatapoints = reply[0];
+  
+    nxtcamFlush(camport);//again...
+  
+  //check that ndatapoints isn't garbage
+  if( ndatapoints < 0 || ndatapoints > 8) return BAD_DATA_FROM_CAM;
+
+  cnt = 5;
+  for(i = 0; i < ndatapoints;i++)
+    {
+      n = i*5 + NXTCAM_REG_DATA;
+      ArrayBuild(message, CAMADDR, n);
+      
+      noCommpending(camport);
+      I2CBytes(camport,message,cnt,reply);// cnt should be 5.
+      
+      //Erin: why do we and these?
+      colour[i] = reply[0] & 0x00FF;
+      x1[i] = reply[1] & 0x00FF;
+      y1[i] = reply[2] & 0x00FF;
+      x2[i] = reply[3] & 0x00FF;
+      y2[i] = reply[4] & 0x00FF;
+      
+            nxtcamFlush(camport);//why?
+    }
+  return 0;
+}
+
+
+
+//Deepak Patil's library contains useful information about the colour maps.
+//we essentially use his routines and comments for building and sending the map
+//however we surpress some TextOuts
+
+
+/*
+  Author Deepak Patil
+  some mods by Alejandro Erickson
+  
+This function prepares colourmap for the objects.
+
+Colourmap[]: the prepared colourmap is stored in this variable.
+
+Object: the object number (1 to 8) for this colourmap being defined.
+
+Red_low, green_low, blue_low: the lowest range of that colour you need
+to match.
+
+Red_high, green_high, blue_high: the highest range of that colour you
+need to match.
+ 
+pass a colourmap array (of size 48) object numbers range from 1 to 8
+pass low and high range colour values of RGB
+
+More about colourmaps: The colourmap is a 48 byte array with 16 bytes
+for each colour, Red, Green and Blue, respectively.  RGB colour
+intensities are in reange 0..255.  The 16 bytes for each colour
+represent the ranges
+
+0-15, 16-31, 32-47, 48-63, 64-79, 80-95, 96-111, 112-127,
+
+128-143, 144-159, 160-175, 176-191, 192-207, 208-223, 224-239, 240-255.
+
+Each of these bytes is a mask of 8 bits, one for each colour being
+tracked.  For example, to set the cam to track red 16-47, green
+144-159, blue 208-223 for colour 1 (colour 0, actually), you need to
+set the first bit of those bytes to 1.  In binary this would be
+
+00000000,10000000,10000000,00000000,00000000,00000000,00000000,00000000,
+00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,
+
+00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,
+00000000,10000000,00000000,00000000,00000000,00000000,00000000,00000000,
+
+00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,
+00000000,00000000,00000000,00000000,00000000,10000000,10000000,10000000
+
+You can update an existing colour map by bitwise ORing each byte of
+the original colour map with the corresponding ones of the new update.
+
+example -
+if you want 4th object to match any shade of red (0 to 255) then you will set
+4th bit of all 16 bytes to 1.
+
+
+*/
+int NXTCam_UpdateColourmap(byte & colourmap[], byte object,
+                           byte red_low, byte red_high,
+                           byte green_low, byte green_high,
+													 byte blue_low, byte blue_high)
+{
+	/* 0-16-32-48-64-80-96-112-128-144-160-176-192-208-224-240-255
+	 */
+   
+  byte mask, nmask;
+	byte a;
+	byte i, rl, rh, gl, gh, bl, bh;
+
+	if ( object > 8 || object < 1) return INPUTS_OUT_OF_RANGE;
+
+	mask = 0x01 << (8-object);// 00010000 where the 1 is at position
+	//'object'
+	nmask = 0xFF ^ mask;// XOR with 11111111 to get "not mask".  ie
+	//11101111
+
+	//instead of fixing bad inputs we will just return an error
+	//value.  this makes it easier to debug our code.
+	//ensure that 0<=rl<=rh<=16
+
+	if ( (red_low   <  0 || red_high   > 255 || red_low   > red_high  ) &&
+	     (green_low <  0 || green_high > 255 || green_low > green_high) &&
+	     (blue_low  <  0 || blue_high  > 255 || blue_low  > blue_high ) )
+	  return  INPUTS_OUT_OF_RANGE;
+
+	rl = red_low/16;
+	rh = (red_high/16);
+	gl = (green_low/16) + 16;
+	gh = (green_high/16) + 16;
+	bl = (blue_low/16) + 32;
+	bh = (blue_high/16) + 32;
+
+	//set 'object'th bit to 1 for each colourmap[i]
+	for (i=0; i < 48; i++) { colourmap[i] |= mask; }
+
+	//set 'object'th bit to 0 if colourmap[i] is not in range
+	for (i = 0; i< rl; i++) { colourmap[i] &= nmask; }
+	for (i = rh + 1; i < gl; i++) { colourmap[i] &= nmask; }
+	for (i = gh + 1; i < bl; i++) { colourmap[i] &= nmask; }
+	for (i = bh + 1; i < 48; i++) { colourmap[i] &= nmask; }
+	
+  return COLOURMAP_READY;
+}
+
+
+		     
+//sendcolourMap sends a colour map given as a single array, colourmap[], of
+//16 red values, 16 green values and 16 blue values (in order of course).
+//see above for more on colourmaps
+//
+int sendcolourMap(byte camport,byte colourmap[]){
+  
+  byte message[10];
+  int i;
+  int ret;
+  byte first_colour_reg = 0x80;//colour registers start here
+  byte v0,v1,v2,v3,v4,v5,v6,v7;
+  //  we add 8 at a time.
+  for(i=0;i<48;){
+    //C evaluates sequences left to right.  I hope nxc does too :)
+    /* the following does not work in nxc
+      ArrayBuild(message,CAMADDR,first_colour_reg,
+	       colourmap[i++],
+	       colourmap[i++],
+	       colourmap[i++],
+	       colourmap[i++],
+	       colourmap[i++],
+	       colourmap[i++],
+	       colourmap[i++],
+	       colourmap[i++]);
+    */
+    v0 = colourmap[i++];
+    v1 = colourmap[i++];
+    v2 = colourmap[i++];
+    v3 = colourmap[i++];
+    v4 = colourmap[i++];
+    v5 = colourmap[i++];
+    v6 = colourmap[i++];
+    v7 = colourmap[i++];
+    ArrayBuild(message,CAMADDR,first_colour_reg,
+	       v0,v1,v2,v3,v4,v5,v6,v7);
+    
+    noCommpending(camport);
+    ret = I2CWrite(camport, 0, message);
+
+    if(ret < 0) return ret;
+    
+    colourmaptoEngine(camport);
+    //should we wait here?  how long? if we need to wait after this command
+    //then we should wait in colourmaptoEngine
+    
+    //we leave out print statements but I recommend double checking that
+    //you wrote what you thought you did
+  }
+}
+
