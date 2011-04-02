@@ -13,7 +13,7 @@ public class SigueLineas {
         public int power = 30 ;
         
         private LightSensor lightleft;
-        private LightSensor lightright;
+        private LightSensor lightright; 
         private int valuellwhite = 0;
         private int valuelrwhite = 0;
         private int valuellblack = 0;
@@ -29,6 +29,12 @@ public class SigueLineas {
         public void parar(){
                 motorleft.stop();
                 motorright.stop();
+        }
+        public void girar(){
+        	pilot.rotate(-20);
+        }
+        public void avanzar(){
+        	pilot.travel(20);
         }
         /*********************************************************************************************/
         
@@ -51,7 +57,19 @@ public class SigueLineas {
                 
                 System.out.println(valuellblack);
                 System.out.println(valuellblack);
+                System.out.println("calibrarnegro");  
+                
+                Button.waitForPress();
+                
+                int valuellsilver = lightleft.readValue();
+                int valuelrsilver = lightright.readValue();
+                
+                System.out.println(valuelrsilver);
+                System.out.println(valuellsilver);
                 System.out.println("calibrado");
+                
+                valuellsilver = valuellsilver - 10 ;
+                valuelrsilver = valuelrsilver - 10 ;
                 
                 valuellwhite = valuellwhite - 10 ;
                 valuelrwhite = valuelrwhite - 10 ;
@@ -66,8 +84,8 @@ public class SigueLineas {
 
         public void task (){
         	
-        	motorright.setPower(30);
-        	motorleft.setPower(30);
+        	motorright.setPower(70);
+        	motorleft.setPower(70);
         	if (ultrasonidos.getDistance()>10)
         	{
         		/**si no hay lata haz el siguelineas*/
@@ -147,8 +165,8 @@ public class SigueLineas {
 
         /*****************************************************************************************/
         public void task2 (){
-        	motorright.setPower(70);
-        	motorleft.setPower(70);
+        	motorright.setPower(100);
+        	motorleft.setPower(100);
         	
         		if ((lightleft.readValue() > valuellwhite) 
         				&&  (lightright.readValue() > valuelrwhite ))
@@ -184,6 +202,7 @@ public class SigueLineas {
         		}else{ 
         			parar(); 
         			LCD.drawString("Otros", 0,7);
+        			pilot.rotate(30);
         			pilot.travel(1);
         		}                                       
 
@@ -214,6 +233,7 @@ public class SigueLineas {
                 motorleft.setPower(power);
                 
          
+                
                 lightleft = new LightSensor(SensorPort.S1);
                 lightright = new LightSensor(SensorPort.S2);
                 // enciende la luz de los sensores
