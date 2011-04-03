@@ -34,7 +34,7 @@ public class SigueLineas {
                 motorright.stop();
         }
         public void girar(){
-        	pilot.rotate(-20);
+        	pilot.rotate(-10);
         }
         public void avanzar(){
         	pilot.travel(20);
