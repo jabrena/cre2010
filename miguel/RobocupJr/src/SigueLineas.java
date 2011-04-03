@@ -14,6 +14,9 @@ public class SigueLineas {
         
         private LightSensor lightleft;
         private LightSensor lightright; 
+
+        private int valuellsilver = 0;
+        private int valuelrsilver = 0;
         private int valuellwhite = 0;
         private int valuelrwhite = 0;
         private int valuellblack = 0;
@@ -210,10 +213,8 @@ public class SigueLineas {
 
          /********************************************************************************************/
 
-        public void EntrarSala(){ 
-                pilot.travel(100);
-                pilot.rotate(90);
-                pilot.travel(100);
+        public void SalaArriba(){ 
+                
                 
         }
         /*********************************************************************************************/
@@ -259,4 +260,10 @@ public class SigueLineas {
          }
 
 */
+        public int getValuellsilver() {
+        	return valuellsilver ;
+        }
+        public int getValuelrsilver() {
+        	return valuelrsilver ;
+        }
 }
