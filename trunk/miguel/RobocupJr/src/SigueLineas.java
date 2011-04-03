@@ -197,8 +197,8 @@ public class SigueLineas {
         			//gira a la derecha
         			parar();
 
-        			motorleft.forward();
-        			motorright.backward();
+        			motorright.forward();
+        			motorleft.backward();
         			wait(100);
 
 
@@ -245,8 +245,26 @@ public class SigueLineas {
                   wait(1);
                 }
                 pilot.stop();
+                pilot.rotate(2);
+                while (ultrasonidos.getDistance()>5){        
+                	pilot .forward();
+                }
+                
+                	
+                pilot.stop();
+                pilot.rotate(-90);
+                pilot.travel(20);
+                pilot.rotate(90);
+                pilot.travel(20);
+                pilot.rotate(90);
+                pilot.travel(20);
+                pilot.rotate(90);
+                pilot.travel(70);
+                
+                
                 Sound.beep();
                 wait(1000);
+                
                 
                 
         }
