@@ -214,6 +214,39 @@ public class SigueLineas {
          /********************************************************************************************/
 
         public void SalaArriba(){ 
+                pilot.travel(20);
+                pilot.rotate(10);
+                pilot.forward();
+                while ((lightleft.readValue() > valuellwhite) 
+        				&&  (lightright.readValue() > valuelrwhite )){
+                	if (ultrasonidos.getDistance()<10){
+                		pilot.stop();
+                		pilot.rotate(10);
+                		pilot.forward();
+                	}
+                	else{
+                		wait(1);
+                	}
+                }
+                pilot.travel(-10);
+                pilot.rotate(-50);
+                pilot.travel(14);
+                pilot.rotate(-90);
+                pilot.travel(40);
+                pilot.rotate(-80);
+                
+                Sound.beep();
+                wait(1000);
+                
+                motorleft.backward();
+    			motorright.forward();
+    			
+                while (ultrasonidos.getDistance()>35){        
+                  wait(1);
+                }
+                pilot.stop();
+                Sound.beep();
+                wait(1000);
                 
                 
         }

@@ -13,8 +13,9 @@ public class RescueAlmi2011 {
 		Button.waitForPress();
 		
 		//Tarea de seguir lineas
+		sl.SalaArriba();
 		
-			while (!tacto.isPressed()){
+			/***while (!tacto.isPressed()){
 				sl.task();
 			}
 			
@@ -23,7 +24,7 @@ public class RescueAlmi2011 {
 			sl.avanzar();
 			while (!Button.ESCAPE.isPressed())
 			sl.task2();
-		
+		*/
 		}
 		//Tarea de la rampa
 		
