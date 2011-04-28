@@ -24,7 +24,7 @@ public class Robot {
 	    NXTCommand.getSingleton().setNXTComm(conn.getNXTComm());
       //LineFollower:
 	    LineFollower linefollower=new LineFollower();
-
+	    linefollower.start();
         //Cerrar Conexión:
         
         conn.close();
@@ -33,3 +33,4 @@ public class Robot {
 	}
 
 }
+
