@@ -1,4 +1,8 @@
-
+/*
+ * Clase: Robot
+ * Descripción: Gestiona el Robot.
+ * Autor: Miguel Ruiz Nogués.
+ */
 
 import java.io.IOException;
 import lejos.nxt.remote.NXTCommand;
@@ -22,10 +26,14 @@ public class Robot {
               System.exit(1);
             }
             NXTCommand.getSingleton().setNXTComm(conn.getNXTComm());
-      //LineFollower:
+       //LineFollower:
             LineFollower linefollower=new LineFollower();
             linefollower.calibrar();
             linefollower.seguir_linea();
+        //Creación de Productos:
+
+           
+
         //Cerrar Conexión:
         
         conn.close();
