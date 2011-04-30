@@ -9,6 +9,7 @@ import java.io.InputStreamReader;
 
 import lejos.nxt.*;
 import lejos.nxt.remote.RemoteMotor;
+import lejos.robotics.Colors.Color;
 import lejos.robotics.navigation.TachoPilot;
 
 public class LineFollower {
@@ -24,6 +25,7 @@ public class LineFollower {
         //Sensores:
         private LightSensor lightleft;
         private LightSensor lightright; 
+        private LightSensor lightproducto;
         //private UltrasonicSensor ultrasonidos = new UltrasonicSensor(SensorPort.S3);
 
         //Variables de máximos y mínimos valores:
@@ -33,6 +35,12 @@ public class LineFollower {
         //Lectura por Teclado:
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in)); 
         String linea;    
+        
+        //Productos:
+        Producto prod1;
+        Producto prod2;
+        Producto prod3;
+        Producto prod4;
         
 //Constructor 
         public LineFollower(){
@@ -48,12 +56,21 @@ public class LineFollower {
             //Sensores de Luz:   
             lightleft = new LightSensor(SensorPort.S1);
             lightright = new LightSensor(SensorPort.S2);
+            lightproducto=new LightSensor(SensorPort.S4);
                    //Encender LEDs.
             lightright.setFloodlight(true);
             lightleft.setFloodlight(true);
+            lightproducto.setFloodlight(true);
+            System.out.println(lightproducto.readValue());
             //pilot
             pilot = new TachoPilot(4f, 20.5f, motorleft, motorright, false);
-
+/*
+ * temporal
+ */
+             prod1 =new Producto (001, "Pan",lightproducto);
+             prod2= new Producto  (002, "Leche",lightproducto);
+             prod3= new Producto  (003, "Cereales",lightproducto);
+             prod4= new Producto  (004, "Mermelada",lightproducto);
      
     }
 
@@ -121,9 +138,10 @@ public class LineFollower {
             	
             	e.printStackTrace();
             } 
+            boolean sw = true;
         	//Bucle infinito de Tarea:        
-        	while (true){
-                        
+        	while (sw==true){
+                  sw=comprobar_productos();
                   //1. Los dos sensores ven Blanco - Avanzar.
                   if ((lightleft.readValue() > valuelwhite) &&  (lightright.readValue() > valuelwhite ))
                         {
@@ -160,12 +178,43 @@ public class LineFollower {
                         }                                       
 
                 }
-
+        	parar();
         }
         
         public void evitar_obstaculo ()
         {
         	
         }
+        
+        public boolean comprobar_productos ()
+        {
+        	System.out.println("COmprobando productos..");
+        	boolean sw = true;
+        	int value= lightproducto.readValue();
+        	
+        	if(prod1.comprobar_producto(value)==true)
+        	{
+        		sw=false;
+        		System.out.println("Producto"+prod1.get_Nombre()+"Encontrado");
+        	}
+        	else if(prod2.comprobar_producto(value)==true)
+        	{
+        		sw=false;
+        		System.out.println("Producto"+prod2.get_Nombre()+"Encontrado");
+        	}
+        	else if(prod3.comprobar_producto(value)==true)
+        	{
+        		sw=false;
+        		System.out.println("Producto"+prod3.get_Nombre()+"Encontrado");
+        	}
+        	else if(prod4.comprobar_producto(value)==true)
+        	{
+        		sw=false;
+        		System.out.println("Producto"+prod4.get_Nombre()+"Encontrado");
+        	}
+        	else{
+        		System.out.println("producto no encontrado.");
+        	}
+        	return sw;
+        }
 }
-
