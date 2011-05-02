@@ -21,7 +21,7 @@ public class LineFollower {
 
         private int power = 60 ;
         private int speed= 50;
-               
+        
         //Sensores:
         private LightSensor lightleft;
         private LightSensor lightright; 
@@ -37,13 +37,13 @@ public class LineFollower {
         String linea;    
         
         //Productos:
-        Producto prod1;
-        Producto prod2;
-        Producto prod3;
-        Producto prod4;
+        Producto productos [];
+        
+        //Navegar:
+        Navegar navegar;
         
 //Constructor 
-        public LineFollower(){
+        public LineFollower(LightSensor light, Producto [] productos){
             //Motores:
             motorleft =  Motor.A;
             motorright =  Motor.C;  
@@ -56,7 +56,7 @@ public class LineFollower {
             //Sensores de Luz:   
             lightleft = new LightSensor(SensorPort.S1);
             lightright = new LightSensor(SensorPort.S2);
-            lightproducto=new LightSensor(SensorPort.S4);
+            lightproducto=light;
                    //Encender LEDs.
             lightright.setFloodlight(true);
             lightleft.setFloodlight(true);
@@ -64,13 +64,12 @@ public class LineFollower {
             System.out.println(lightproducto.readValue());
             //pilot
             pilot = new TachoPilot(4f, 20.5f, motorleft, motorright, false);
-/*
- * Lista de Productos.
- */
-             prod1 =new Producto  (001, "Pan",lightproducto);
-             prod2= new Producto  (002, "Leche",lightproducto);
-             prod3= new Producto  (003, "Cereales",lightproducto);
-             prod4= new Producto  (004, "Mermelada",lightproducto);
+
+            //Vector de Productos
+            this.productos=productos;
+            
+            //Navegar:
+            navegar=new Navegar(lightproducto,productos);
     }
 
 //Métodos:
@@ -141,10 +140,13 @@ public class LineFollower {
             } 
             boolean sw = true;
             int opc =menu();
+    		//Comprobando producto.
+            sw=comprobar_productos(opc);
+            
         	//Bucle infinito de Tarea:   
         	while (sw==true){
-                  sw=comprobar_productos(opc);
-                 /*
+
+/*
                   //1. Los dos sensores ven Blanco - Avanzar.
                   if ((lightleft.readValue() > valuelwhite) &&  (lightright.readValue() > valuelwhite ))
                         {
@@ -178,8 +180,11 @@ public class LineFollower {
                         		//En caso contrario.
                                 parar(); 
                                 pilot.travel(1);
-                        }          
-                   */                             
+                        }   
+ */
+          		//Comprobando producto.
+                  sw=comprobar_productos(opc);
+                                              
 
                 }
         	parar();
@@ -195,33 +200,15 @@ public class LineFollower {
         
         public boolean comprobar_productos (int prod)
         {
-        	System.out.println("COmprobando productos..");
         	boolean sw = true;
         	int value= lightproducto.readValue();
         	
-        	if(prod1.comprobar_producto(value)==true && prod==1)
-        	{
+        	if (navegar.identificar_posicion()== prod){
         		sw=false;
-        		System.out.println("Producto"+prod1.get_Nombre()+"Encontrado");
         	}
-        	else if(prod2.comprobar_producto(value)==true && prod==2)
-        	{
-        		sw=false;
-        		System.out.println("Producto"+prod2.get_Nombre()+"Encontrado");
-        	}
-        	else if(prod3.comprobar_producto(value)==true && prod==3)
-        	{
-        		sw=false;
-        		System.out.println("Producto"+prod3.get_Nombre()+"Encontrado");
-        	}
-        	else if(prod4.comprobar_producto(value)==true && prod==4)
-        	{
-        		sw=false;
-        		System.out.println("Producto"+prod4.get_Nombre()+"Encontrado");
-        	}
-        	else{
-        		System.out.println("producto no encontrado.");
-        	}
+        	System.out.println(lightproducto.readValue());
+        		
+
         	return sw;
         }
         /*
@@ -240,17 +227,18 @@ public class LineFollower {
             	
             	try{
                  	
-                	opc = Integer.parseInt(br.readLine());
+                	opc = Integer.parseInt(br.readLine())-1;
                 }
                 catch(Exception e){ 
                 	
                 	e.printStackTrace();
                 }  
-                if(opc<1 || opc>4)
+                
+                if(opc<0 || opc>3)
                 {
                 	System.out.println("Introduzca el resultado de nuevo.");
                 }
-        	}while(opc<1 || opc>4);
+        	}while(opc<0 || opc>3);
         	return opc;
         }
 }
