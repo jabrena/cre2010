@@ -1,3 +1,8 @@
+/*
+ * Clase: Producto.
+ * Descripción: Producto del supermercado.
+ * Autor: Miguel Ruiz Nogués.
+ */
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
@@ -16,6 +21,8 @@ public class Producto {
 	private int clave_producto;
 	private int color;
 	private String nombre;
+	public int valor;
+	
     //Lectura por Teclado:
     BufferedReader br = new BufferedReader(new InputStreamReader(System.in)); 
     String linea;   
