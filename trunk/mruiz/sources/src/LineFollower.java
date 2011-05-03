@@ -138,15 +138,16 @@ public class LineFollower {
             	
             	e.printStackTrace();
             } 
+            
             boolean sw = true;
-            int opc =menu();
+            int opc =navegar.destino();
     		//Comprobando producto.
             sw=comprobar_productos(opc);
             
         	//Bucle infinito de Tarea:   
         	while (sw==true){
 
-/*
+
                   //1. Los dos sensores ven Blanco - Avanzar.
                   if ((lightleft.readValue() > valuelwhite) &&  (lightright.readValue() > valuelwhite ))
                         {
@@ -181,13 +182,15 @@ public class LineFollower {
                                 parar(); 
                                 pilot.travel(1);
                         }   
- */
+ 
           		//Comprobando producto.
                   sw=comprobar_productos(opc);
                                               
 
                 }
         	parar();
+        	System.out.println("Producto"+productos[opc].get_Nombre()+ " encontrado.");
+        	
         }
         
         public void evitar_obstaculo ()
@@ -198,47 +201,16 @@ public class LineFollower {
          * Combrobar Productos
          */
         
-        public boolean comprobar_productos (int prod)
+        public boolean comprobar_productos (int opc)
         {
         	boolean sw = true;
-        	int value= lightproducto.readValue();
-        	
-        	if (navegar.identificar_posicion()== prod){
+        	if(navegar.identificar_posicion()==opc)
+        	{
         		sw=false;
         	}
-        	System.out.println(lightproducto.readValue());
         		
 
         	return sw;
         }
-        /*
-         * MENU 
-         */
-        public int menu ()
-        {
-        	int opc=0;
-        	do{
-        		System.out.println("Escoga el producto.");
-        		System.out.println("1.Pan");
-            	System.out.println("2.Leche");
-            	System.out.println("3.Cereales");
-            	System.out.println("4.Mermelada");
-            	System.out.println("           Opción:");
-            	
-            	try{
-                 	
-                	opc = Integer.parseInt(br.readLine())-1;
-                }
-                catch(Exception e){ 
-                	
-                	e.printStackTrace();
-                }  
-                
-                if(opc<0 || opc>3)
-                {
-                	System.out.println("Introduzca el resultado de nuevo.");
-                }
-        	}while(opc<0 || opc>3);
-        	return opc;
-        }
+       
 }

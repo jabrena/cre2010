@@ -21,7 +21,6 @@ public class Producto {
 	private int clave_producto;
 	private int color;
 	private String nombre;
-	public int valor;
 	
     //Lectura por Teclado:
     BufferedReader br = new BufferedReader(new InputStreamReader(System.in)); 
@@ -43,14 +42,17 @@ public class Producto {
 	
 	
 	//Métodos:
+	/*
+	 * OBTENER COLOR
+	 * Asocia el color medido con el producto.
+	 */
 	public int obtener_color (){
 		
-		System.out.println("Obteniendo el color medio de: "+nombre);
 		
-		System.out.println("Situe el sensor en el color deseado y pulse enter...");
+		System.out.println("Producto "+nombre+". Situe el sensor en el color deseado y pulse enter...");
+		
         try{
-            
-        	linea = br.readLine();
+         	linea = br.readLine();
         }
         catch(Exception e){ 
         	
@@ -60,19 +62,10 @@ public class Producto {
 
         int valor = light.readValue();
        
+        System.out.println("COLOR: "+valor);
         return valor;
 	}
-	
-	public boolean comprobar_producto (int value){
-		
-		boolean sw = false;
-		
-		if(color==value){
-			sw=true;
-		}
-		
-		return sw;
-	}
+
 	public int get_Clave()
 	{
 		return clave_producto;

@@ -42,9 +42,6 @@ public class Robot {
             LineFollower linefollower=new LineFollower(lightproducto,productos);
             linefollower.calibrar();
             linefollower.seguir_linea();
- 
-
-           
 
         //Cerrar Conexión:
         
