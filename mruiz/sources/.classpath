@@ -2,8 +2,28 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="/usr/local/lejos/lib/bluecove-2.1.0.jar"/>
-	<classpathentry kind="lib" path="/usr/local/lejos/lib/bluecove-gpl-2.1.0.jar"/>
-	<classpathentry kind="lib" path="/usr/local/lejos/lib/pccomm.jar"/>
+	<classpathentry kind="lib" path="/home/miguelo/Escritorio/PFC/sources/lib/lib-lejos/pccomm.jar"/>
+	<classpathentry kind="lib" path="/home/miguelo/Escritorio/PFC/sources/lib/lib-bluetooth/bluecove-2.1.0.jar"/>
+	<classpathentry kind="lib" path="/home/miguelo/Escritorio/PFC/sources/lib/lib-bluetooth/bluecove-gpl-2.1.0.jar"/>
+	<classpathentry kind="lib" path="/home/miguelo/Escritorio/PFC/sources/lib/lib-sphinx/ant-contrib-0.6.jar"/>
+	<classpathentry kind="lib" path="/home/miguelo/Escritorio/PFC/sources/lib/lib-sphinx/batch.jar"/>
+	<classpathentry kind="lib" path="/home/miguelo/Escritorio/PFC/sources/lib/lib-sphinx/js.jar"/>
+	<classpathentry kind="lib" path="/home/miguelo/Escritorio/PFC/sources/lib/lib-sphinx/jsapi-1.0-base.jar"/>
+	<classpathentry kind="lib" path="/home/miguelo/Escritorio/PFC/sources/lib/lib-sphinx/junit-4.8.1.jar"/>
+	<classpathentry kind="lib" path="/home/miguelo/Escritorio/PFC/sources/lib/lib-sphinx/RM1_8gau_13dCep_16k_40mel_130Hz_6800Hz.jar"/>
+	<classpathentry kind="lib" path="/home/miguelo/Escritorio/PFC/sources/lib/lib-sphinx/sphinx4.jar"/>
+	<classpathentry kind="lib" path="/home/miguelo/Escritorio/PFC/sources/lib/lib-sphinx/tags.jar"/>
+	<classpathentry kind="lib" path="/home/miguelo/Escritorio/PFC/sources/lib/lib-sphinx/TIDIGITS_8gau_13dCep_16k_40mel_130Hz_6800Hz.jar"/>
+	<classpathentry kind="lib" path="/home/miguelo/Escritorio/PFC/sources/lib/lib-sphinx/WSJ_8gau_13dCep_16k_40mel_130Hz_6800Hz.jar"/>
+	<classpathentry kind="lib" path="/home/miguelo/Escritorio/PFC/sources/lib/lib-tts/cmudict04.jar"/>
+	<classpathentry kind="lib" path="/home/miguelo/Escritorio/PFC/sources/lib/lib-tts/cmulex.jar"/>
+	<classpathentry kind="lib" path="/home/miguelo/Escritorio/PFC/sources/lib/lib-tts/cmu_time_awb.jar"/>
+	<classpathentry kind="lib" path="/home/miguelo/Escritorio/PFC/sources/lib/lib-tts/cmutimelex.jar"/>
+	<classpathentry kind="lib" path="/home/miguelo/Escritorio/PFC/sources/lib/lib-tts/cmu_us_kal.jar"/>
+	<classpathentry kind="lib" path="/home/miguelo/Escritorio/PFC/sources/lib/lib-tts/en_us.jar"/>
+	<classpathentry kind="lib" path="/home/miguelo/Escritorio/PFC/sources/lib/lib-tts/freetts.jar"/>
+	<classpathentry kind="lib" path="/home/miguelo/Escritorio/PFC/sources/lib/lib-tts/freetts-jsapi10.jar"/>
+	<classpathentry kind="lib" path="/home/miguelo/Escritorio/PFC/sources/lib/lib-tts/jsapi.jar"/>
+	<classpathentry kind="lib" path="/home/miguelo/Escritorio/PFC/sources/lib/lib-tts/mbrola.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
