@@ -46,7 +46,8 @@ public class Navegar {
             		posicion=i;
             	}
         	}
-
+		   	System.out.println(light.readValue());
+		   	System.out.println("Posicion: "+posicion);
 		return posicion;
 	}
 	
@@ -77,7 +78,14 @@ public class Navegar {
         		vm.say("orange");
         		vm.say("rise");
         		vm.say("Good Bye");
-        		
+        		try 
+                {
+                	Thread.sleep(500);
+                } 
+                catch (Exception e) 
+                {
+                	e.printStackTrace();
+                }  
         		String opcion= vm.listen();
             	//System.out.println("He escuchado: "+opcion);
             	System.out.println("Leyendo: "+opcion);
@@ -117,7 +125,7 @@ public class Navegar {
                 
         	}while(opc<0 || opc>3);
         	
-        	
+        	System.out.println("OPC es: "+opc);
         	return opc;
      }
 	

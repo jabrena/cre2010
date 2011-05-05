@@ -27,12 +27,12 @@ public class Producto {
     LightSensor light;
     
 	//Constructor
-	public Producto(int clave, String nombre, LightSensor lightproducto){
+	public Producto(int clave, String nombre, LightSensor lightproducto,int color){
 		
 		this.clave_producto=clave;
 		this.nombre=nombre;
 		light = lightproducto;
-		color=obtener_color();
+		this.color=obtener_color();
 		
 
 	}

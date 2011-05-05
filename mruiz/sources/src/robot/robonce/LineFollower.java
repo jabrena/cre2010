@@ -215,7 +215,7 @@ public class LineFollower {
         	{
         		sw=false;
         	}
-        		
+        	System.out.println("Opcion: "+opc);
 
         	return sw;
         }
