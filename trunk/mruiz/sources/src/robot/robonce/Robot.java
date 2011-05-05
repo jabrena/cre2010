@@ -38,10 +38,10 @@ public class Robot {
 
        //Crear Vector de productos:
             Producto productos[]= new Producto [4];
-            productos[0] =new Producto  (001, "ham",lightproducto);
-            productos[1]= new Producto  (002, "cheese",lightproducto);
-            productos[2]= new Producto  (003, "orange",lightproducto);
-            productos[3]= new Producto  (004, "rise",lightproducto);
+            productos[0] =new Producto  (001, "ham",lightproducto,47);
+            productos[1]= new Producto  (002, "cheese",lightproducto,58);
+            productos[2]= new Producto  (003, "orange",lightproducto,44);
+            productos[3]= new Producto  (004, "rise",lightproducto,56);
              
        //LineFollower:
                        
